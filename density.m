@@ -5,12 +5,11 @@ R_PO = data.const.R_POLAR;
 % latitude of the satellite
 theta = pi/2 - acos(rr(3)/norm(rr));
 
-a = R_EQ^2*cos(theta);
-b = R_PO^2*sin(theta);
-c = R_EQ*cos(theta);
-d = R_PO*sin(theta);
+a = R_PO*cos(theta);
+b = R_EQ*sin(theta);
+
 % Earth's radius for the specified latitude
-R = sqrt((a^2+b^2)/(c^2+d^2));
+R = sqrt((R_EQ^2*R_PO^2)/(a^2+b^2));
 
 alt = norm(rr) - R;
 
