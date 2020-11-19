@@ -1,11 +1,35 @@
 function rho = density(rr,data)
 
-alt = norm(rr) - data.const.R_MEAN;
+R_EQ = data.const.R_EQUATORIAL;
+R_PO = data.const.R_POLAR;
+% latitude of the satellite
+theta = pi/2 - acos(rr(3)/norm(rr));
 
-if alt<=300
+a = R_EQ^2*cos(theta);
+b = R_PO^2*sin(theta);
+c = R_EQ*cos(theta);
+d = R_PO*sin(theta);
+% Earth's radius for the specified latitude
+R = sqrt((a^2+b^2)/(c^2+d^2));
+
+alt = norm(rr) - R;
+
+if alt<=180
+    h0 = 150;
+    rho0 = 2.070*1e-9;
+    H = 22.523;
+elseif alt<=200 && alt>180
+    h0 = 180;
+    rho0 = 5.464*1e-10;
+    H = 29.740;
+elseif alt<=250 && alt>200
+    h0 = 200;
+    rho0 = 2.789*1e-10;
+    H = 37.105;
+elseif alt<=300 && alt>250
     h0 = 250;
     rho0 = 7.248*1e-11;
-    H = 45.546;
+    H = 45.546;  
 elseif alt<=350 && alt>300
     h0 = 300;
     rho0 = 2.418*1e-11;
@@ -26,26 +50,10 @@ elseif alt<=600 && alt>500
     h0 = 500;
     rho0 = 6.967*1e-13;
     H = 63.822;
-elseif alt<=700 && alt>600
+elseif alt>600
     h0 = 600;
     rho0 = 1.454*1e-13;
     H = 71.835;
-elseif alt<=800 && alt>700
-    h0 = 700;
-    rho0 = 3.614*1e-14;
-    H = 88.667;
-elseif alt<=900 && alt>800
-    h0 = 800;
-    rho0 = 1.170*1e-14;
-    H = 124.64;
-elseif alt<=1000 && alt>900
-    h0 = 900;
-    rho0 = 5.245*1e-15;
-    H = 181.05;
-elseif alt>1000
-    h0 = 1000;
-    rho0 = 3.019*1e-15;
-    H = 268;
 else 
     rho0 = 0;
 end
