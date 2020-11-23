@@ -11,15 +11,17 @@ function dY = odeFun(t,Y,data)
 %  dY       Time derivative of the state vector
 % 
 
+VOut = 0;
 
-% 
+YFCV = Y(1:3);
+dYFCV = flowControlValve(YFCV,VOut,data);
 
-% thrust = ionThruster(xFCV,data);
+% thrust = ionThruster(YFCV(2),data);
 
 thrust = 0;  % [N]
 
-YGPE = Y;
+YGPE = Y(4:9);
 dYGPE = GPE(YGPE,thrust,data); % RHS of Gauss Planetary Equations
 
-dY = dYGPE;
+dY = [dYFCV; dYGPE];
 end

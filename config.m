@@ -12,16 +12,17 @@ data.accelerometer.mass = 0.32; % Accelerometer Seismic Mass [kg]
 data.accelerometer.gap = 5e-4; % Electrodes-Mass Gap [m]
 data.accelerometer.VBias = 10; % Accelerometer Bias Voltage [V]
 data.accelerometer.C = 2e-12; % Capacitance [F]
-data.accelerometer.kP = 1e6; % Controller Proportional Gain
-data.accelerometer.kD = 5e4; % Controller Derivative Gain
+data.accelerometer.kProp = 1e6; % Controller Proportional Gain
+data.accelerometer.kDer = 5e4; % Controller Derivative Gain
 
 % Flow Control Valve:
-data.valve.area = 1e-5; % Orifice Area [m^2]
-data.valve.spoolMass = 2e-1; % Spool Mass [kg]
-data.valve.kP = 0.1; % Controller Proportional Gain
-data.valve.kI = 3; % Controller Integral Gain
-data.valve.kSpring = 7e3; % Spring Coefficient [N/m]
-data.valve.c = 30; % Friction Coefficient [Ns/m]
+data.FCV.A0 = 1e-5; % Orifice Area [m^2]
+data.FCV.massSpool = 2e-1; % Spool Mass [kg]
+data.FCV.kProp = 0.1; % Controller Proportional Gain
+data.FCV.kInt = 3; % Controller Integral Gain
+data.FCV.kI = 0.2; % Proportionality Coeffcient Current - Spool
+data.FCV.kSpring = 7e3; % Spring Coefficient [N/m]
+data.FCV.c = 30; % Friction Coefficient [Ns/m]
 
 % Ion Thruster:
 data.thruster.T2 = 240; % Xenon Working Temperature [K]
