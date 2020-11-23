@@ -27,6 +27,7 @@ data.FCV.c = 30; % Friction Coefficient [Ns/m]
 % Ion Thruster:
 data.thruster.T2 = 240; % Xenon Working Temperature [K]
 data.thruster.p2 = 2e5; % Xenon Working Pressure [Pa]
+data.thruster.mmXe = 131.293; % Xenon Molar Mass [g/mol]
 data.thruster.kXe = 1.66; % Xenon Specific Heat Ratio
 data.thruster.massIon = 2.188e-25; % Xenon Ion Mass [kg]
 data.thruster.e = 1.6e-19; % Electron Charge [C]
@@ -47,3 +48,4 @@ data.const.R_EQUATORIAL = 6378.16; % Earth's equatorial radius [km]
 data.const.R_POLAR = 6356.778; % Earth's polar radius [km]
 data.const.R_MEAN = 6371.0088; % Earth's mean radius [km] (from https://en.wikipedia.org/wiki/Earth_radius#Mean_radius)
 data.const.J2 = 0.00108263; % J2 factor
+data.const.Ru = 8.314462; % Universal Gas Constant [J/mol/K]
