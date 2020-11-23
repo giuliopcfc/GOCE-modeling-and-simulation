@@ -8,7 +8,7 @@ function aDrag = pertDrag(rr,vv,data)
 %  data             data struct.
 % 
 % OUTPUT:
-%  aDrag [3,1]    Perturbing acceleration vector due to aerodynamic drag [km/s^2]
+%  aDrag [3,1]    Perturbing acceleration vector due to aerodynamic drag [m/s^2]
 % 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -16,9 +16,8 @@ function aDrag = pertDrag(rr,vv,data)
 rho = density(rr,data);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-vRel = vv - cross(data.const.W_EARTH*[0;0;1],rr); % Air Relative Velocity [km/s]
+vRel = (vv - cross(data.const.W_EARTH*[0;0;1],rr))*1000; % Air Relative Velocity [m/s]
 
-aDrag = -0.5/data.goce.balCoeff*rho*norm(vRel)*vRel; % Perturbing acceleration [km/s^2/1e3]
-aDrag = aDrag*1000; % Conversion to km/s^2                   
-
+aDrag = -0.5/data.goce.balCoeff*rho*norm(vRel)*vRel; % Perturbing acceleration [m/s^2]
+             
 end

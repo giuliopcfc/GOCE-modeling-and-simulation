@@ -1,4 +1,4 @@
-function dYA = accelerometer(YA, thrust, drag, data)
+function dYA = accelerometer(YA, thrust, dragV, data)
 % 
 % Function to compute the derivative of the state of a capacitive
 % accelerometer + read-out circuit for voltage.
@@ -7,7 +7,7 @@ function dYA = accelerometer(YA, thrust, drag, data)
 %  YA     [3,1]     Array of the state variables (position, velocity and
 %                   output voltage of the read-out circuit)
 %  thrust           Value of thrust [N]
-%  drag             Value of drag [N]
+%  drag             Value of drag component along velocity direction [N]
 %  data             data struct
 % 
 % OUTPUT:
@@ -56,7 +56,7 @@ C2 = perm*areaA/(g + x);
 Vx = x/g*VBias;
 
 % Acceleration of the seismic mass due to the acceleration of the s/c:
-a_ext = (thrust - drag)/mGOCE; 
+a_ext = (-thrust + dragV)/mGOCE; 
 %%NOTE da Lollo: da controllare il segno per avere il sistema di 
 % riferimento corretto
 

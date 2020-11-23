@@ -4,24 +4,49 @@ function dY = odeFun(t,Y,data)
 %  
 % INPUT:
 %  t        Time instant
-%  Y        Keplerian elements array
+%  Y        State array
 %  data     data struct
 % 
 % OUTPUT:
-%  dY       Time derivative of the state vector
+%  dY       Time derivative of the state array
+% 
+% NOTES:
+%  Y(1:3) = YFCV = [intVOut; xFCV; vFCV]
+%  Y(4:6) = YA = [xMass; vMass; VOut]
+%  Y(7:12) = YGPE = [a; e; i; OM; om; theta]
 % 
 
-VOut = 0;
+% Load data:
+MU = data.const.MU_EARTH;
 
-YFCV = Y(1:3);
-dYFCV = flowControlValve(YFCV,VOut,data);
+% Load state arrays:
+YFCV = Y(1:3); YA = Y(4:6); YGPE = Y(7:12);
 
-% thrust = ionThruster(YFCV(2),data);
+% Flow Control Valve:
+dYFCV = flowControlValve(YFCV,YA(3),data);
 
-thrust = 0;  % [N]
+% Ion Thruster:
+thrust = ionThruster(YFCV(2),data);
 
-YGPE = Y(4:9);
-dYGPE = GPE(YGPE,thrust,data); % RHS of Gauss Planetary Equations
+% Initialize keplerian elements:
+a = YGPE(1); e = YGPE(2); i = YGPE(3);
+OM = YGPE(4); om = YGPE(5); f = YGPE(6);
 
-dY = [dYFCV; dYGPE];
+% Passage from orbital parameters to cartesian coordinates:
+[rr,vv] = kep2car(a,e,i,OM,om,f,MU);  
+
+% Aerodynamic Drag:
+aDrag = pertDrag(rr,vv,data);
+% Drag component in the direction of velocity:
+dragV = data.goce.mass*dot(aDrag,vv/norm(vv));
+
+% Accelerometer:
+dYA = accelerometer(YA, thrust, dragV, data);
+
+% Orbital Mechanics:
+dYGPE = GPE(YGPE,rr,vv,aDrag,thrust,data);
+
+dY = [dYFCV; dYA; dYGPE];
+a= 2;
+
 end
