@@ -4,14 +4,14 @@ function dYA = accelerometer(YA, thrust, drag, data)
 % accelerometer + read-out circuit for voltage.
 %  
 % INPUT:
-%  Y     [3,1]      Array of the state variables (position, velocity and
+%  YA     [3,1]     Array of the state variables (position, velocity and
 %                   output voltage of the read-out circuit)
 %  thrust           Value of thrust [N]
 %  drag             Value of drag [N]
 %  data             data struct
 % 
 % OUTPUT:
-%  dYA   [3,1]      Time derivative of the state vector
+%  dYA    [3,1]     Time derivative of the state vector
  
 %%NOTE da Lollo: mi sa bisogna avere il drag in output dalle GPE e darlo in
 % input qui
