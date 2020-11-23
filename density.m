@@ -1,17 +1,26 @@
 function rho = density(rr,data)
+% 
+% Function to compute the atmosphere density using the CIRA-72 model.
+% 
+% INPUT:
+%  rr   [3,1]       Position Vector
+%  data             data struct.
+% 
+% OUTPUT:
+%   rho             Density [kg/m^3]
+% 
 
 R_EQ = data.const.R_EQUATORIAL;
 R_PO = data.const.R_POLAR;
-% latitude of the satellite
-theta = pi/2 - acos(rr(3)/norm(rr));
 
-a = R_PO*cos(theta);
-b = R_EQ*sin(theta);
+lat = pi/2 - acos(rr(3)/norm(rr)); % latitude of the satellite
 
-% Earth's radius for the specified latitude
+% Earth's radius for the specified latitude:
+a = R_PO*cos(lat);
+b = R_EQ*sin(lat);
 R = sqrt((R_EQ^2*R_PO^2)/(a^2+b^2));
 
-alt = norm(rr) - R;
+alt = norm(rr) - R; % Local altitude of the satellite
 
 if alt<=180
     h0 = 150;
@@ -45,16 +54,6 @@ elseif alt<=500 && alt>450
     h0 = 450;
     rho0 = 1.585*1e-12;
     H = 60.828;
-elseif alt<=600 && alt>500
-    h0 = 500;
-    rho0 = 6.967*1e-13;
-    H = 63.822;
-elseif alt>600
-    h0 = 600;
-    rho0 = 1.454*1e-13;
-    H = 71.835;
-else 
-    rho0 = 0;
 end
 
 rho = rho0*exp(-(alt-h0)/H);

@@ -1,10 +1,11 @@
-function dY = GPE(Y,data)
+function dY = GPE(Y,thrust,data)
 % 
 % GPE Gauss Planetary Equations. Function to compute the derivative of the 
 % keplerian elements' state array.
 %  
 % INPUT:
 %  Y     [6,1]      Keplerian elements array
+%  thrust           Value of thrust [N]
 %  data             data struct
 % 
 % OUTPUT:
@@ -39,9 +40,9 @@ aJ2 = pertJ2(rr,data);
 tVers = vv/norm(vv);                       % Tangential versor
 hVers = cross(rr,vv)/norm(cross(rr,vv));   % Out of plane versor
 nVers = cross(hVers,tVers);                % Normal versor
-A = [tVers,nVers,hVers]';                  % Rotation Matrix
+A = [tVers,nVers,hVers];                   % Rotation Matrix
 
-aPert = A*(aDrag + aJ2);
+aPert = A'*(aDrag + aJ2) + [thrust; 0; 0];
 
 at = aPert(1);          % Tangential component of perturbing acceleration
 an = aPert(2);          % Normal component of perturbing acceleration

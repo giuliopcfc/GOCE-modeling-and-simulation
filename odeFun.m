@@ -11,8 +11,15 @@ function dY = odeFun(t,Y,data)
 %  dY       Time derivative of the state vector
 % 
 
+
+% 
+
+% thrust = ionThruster(xFCV,data);
+
+thrust = 0;  % [N]
+
 YGPE = Y;
-dYGPE = GPE(YGPE,data); % RHS of Gauss Planetary Equations
+dYGPE = GPE(YGPE,thrust,data); % RHS of Gauss Planetary Equations
 
 dY = dYGPE;
 end
