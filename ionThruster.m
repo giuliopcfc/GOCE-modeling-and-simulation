@@ -1,4 +1,14 @@
 function thrust = ionThruster(xFCV,data)
+% 
+% Function to compute the thrust.
+% 
+% INPUT:
+%  xFCV               Position control valve [m]
+%  data               data struct
+% 
+% OUTPUT:
+%  thrust             Force [N]
+% 
 
 A0 = data.FCV.A0;
 D0 = sqrt(4*A0/pi);
