@@ -35,6 +35,7 @@ x = YA(1); v = YA(2); VOut = YA(3);
 % BCS for the accelerometer (physical constraints):
 %%NOTE da Lollo: queste le ho riprese dall'ex2 dell'assignment 2, però devo
 % pensarci un attimo, in linea di massima mi sembra che vadano bene.
+% BISOGNA METTERE g/2!!
 if x <= -g
     x = -g;
     if v <= 0
@@ -56,12 +57,12 @@ C2 = perm*areaA/(g + x);
 Vx = x/g*VBias;
 
 % Acceleration of the seismic mass due to the acceleration of the s/c:
-a_ext = (-thrust + dragV)/mGOCE; 
+a_ext = (thrust + dragV)/mGOCE; 
 %%NOTE da Lollo: da controllare il segno per avere il sistema di 
 % riferimento corretto
 
 % Current flowing from the seismic mass:
-dC = -perm*areaA*(1/(g + x)^2 + 1/(g - x)^2);
+dC = perm*areaA*(1/(g + x)^2 + 1/(g - x)^2);
 i = dC*v*VBias;
 
 % Derivative of the output voltage:
@@ -73,12 +74,14 @@ VC = kProp*VOut + kDer*dVOut;
 % Electrostatic forces acting on the mass:
 DV1 = VBias - VC - 1/2*Vx;
 DV2 = VBias + VC + 1/2*Vx;
-F1 = 1/2*C1*DV1^2;
-F2 = 1/2*C2*DV2^2;
+F1 = 0.5*C1*DV1^2/(g - x);
+F2 = 0.5*C2*DV2^2/(g + x);
 
 % EOM of the seismic mass:
 dx = v;
 dv = a_ext + (-F1 + F2)/massA;
+
+% MANCANO DELLE BCS SU DV!!
 
 % Derivatives of the state variables:
 dYA = [dx; dv; dVOut];

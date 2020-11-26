@@ -11,8 +11,9 @@ config;
 %% INTEGRATION:
 
 %%% Initial conditions:
+D0 = sqrt(4*data.FCV.A0/pi);
 % Initial State for flow control valve:
-Y0FCV = [0; 0; 0];
+Y0FCV = [0; D0; 0];
 
 % Initial State for accelerometer:
 Y0A = [0; 0; 0];
@@ -25,11 +26,23 @@ Y0GPE = [a0; data.orbit.eccentricity; data.orbit.inclination*pi/180;...
         data.orbit.argPerigee*pi/180; data.orbit.RAAN*pi/180; data.orbit.theta0*pi/180]; 
     
 % Assembly initial state array:
-Y0 = [Y0A; Y0FCV; Y0GPE];
+Y0 = [Y0FCV; Y0A; Y0GPE];
 
 %%% Integration:
 options = odeset('AbsTol',1e-10,'RelTol',1e-8);
-[T,Y] = ode15s(@odeFun,[0 1e5],Y0,options,data);
+tic
+[T,Y] = ode15s(@odeFun,[0 10e4],Y0,options,data);
+toc
+
+%% RETRIVE PAROUT:
+thrust = T; dragV = T;
+
+for i = 1:length(T)
+    [~,parout] = odeFun(T(i),Y(i,:)',data);
+    
+    thrust(i) = parout(1); dragV(i) = parout(2);
+    
+end
 
 %% PLOT RESULTS:
 

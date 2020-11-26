@@ -28,7 +28,7 @@ end
 % PI controller:
 i = kProp*VOut + kIint*intVOut;
 
-x0 = 10*A0; % Rest position of the spring [m]
+x0 = D0; % Rest position of the spring [m]
 
 % EOM of the spool:
 dx = v;

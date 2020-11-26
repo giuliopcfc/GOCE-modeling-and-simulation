@@ -1,4 +1,4 @@
-function dY = odeFun(t,Y,data)
+function [dY,parout] = odeFun(t,Y,data)
 %
 % Right Hand Side of the ODE system.
 %  
@@ -47,6 +47,8 @@ dYA = accelerometer(YA, thrust, dragV, data);
 dYGPE = GPE(YGPE,rr,vv,aDrag,thrust,data);
 
 dY = [dYFCV; dYA; dYGPE];
-a= 2;
+
+% Output parameters:
+parout = [thrust; dragV];
 
 end
