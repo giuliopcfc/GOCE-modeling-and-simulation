@@ -35,7 +35,7 @@ x = YA(1); v = YA(2); VOut = YA(3);
 % BCS for the accelerometer (physical constraints):
 %%NOTE da Lollo: queste le ho riprese dall'ex2 dell'assignment 2, però devo
 % pensarci un attimo, in linea di massima mi sembra che vadano bene.
-% BISOGNA METTERE g/2!!
+% BISOGNA METTERE g/2!! Giulio non dire cagate!!
 if x <= -g
     x = -g;
     if v <= 0
