@@ -13,9 +13,6 @@ function dYA = accelerometer(YA, thrust, dragV, data)
 % OUTPUT:
 %  dYA    [3,1]     Time derivative of the state vector
  
-%%NOTE da Lollo: mi sa bisogna avere il drag in output dalle GPE e darlo in
-% input qui
-
 % Load data:
 mGOCE = data.goce.mass;
 areaA = data.accelerometer.areaMass;
@@ -33,9 +30,6 @@ kDer = data.accelerometer.kDer;
 x = YA(1); v = YA(2); VOut = YA(3);
 
 % BCS for the accelerometer (physical constraints):
-%%NOTE da Lollo: queste le ho riprese dall'ex2 dell'assignment 2, però devo
-% pensarci un attimo, in linea di massima mi sembra che vadano bene.
-% BISOGNA METTERE g/2!!
 if x <= -g
     x = -g;
     if v <= 0
@@ -58,8 +52,6 @@ Vx = x/g*VBias;
 
 % Acceleration of the seismic mass due to the acceleration of the s/c:
 a_ext = (thrust + dragV)/mGOCE; 
-%%NOTE da Lollo: da controllare il segno per avere il sistema di 
-% riferimento corretto
 
 % Current flowing from the seismic mass:
 dC = perm*areaA*(1/(g + x)^2 + 1/(g - x)^2);
@@ -81,7 +73,10 @@ F2 = 0.5*C2*DV2^2/(g + x);
 dx = v;
 dv = a_ext + (-F1 + F2)/massA;
 
-% MANCANO DELLE BCS SU DV!!
+% BCS for the accelerometer acceleration:
+if (x >= g && dv > 0) || (x <= g && dv < 0)
+    dv = 0;
+end
 
 % Derivatives of the state variables:
 dYA = [dx; dv; dVOut];
