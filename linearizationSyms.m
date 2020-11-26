@@ -108,7 +108,7 @@ Atemp = subs(JA, [kI, kPropFCV, kIntFCV, mFCV, kSpring, c, A0, TX, pX, k, R,...
     e, DVT, massIonX, mGOCE, areaA, massA, perm, g, VBias, CF, kPropA,...
     kDerA], data_vecA);
 
-A = simplify(subs(Atemp, Y));
+A = simplify(subs(Atemp, Y, Y0));
 
 % Matrix B:
 JB = jacobian(dY, dragV);
@@ -123,9 +123,9 @@ Ctemp = subs(JC, [A0, DVT, R, TX, e, k, massIonX, pX], data_vecC);
 
 C = simplify(subs(Ctemp, xFCV, Y0(2)));
 
-% % Eigenvalues of the linear system:
-% eigA = eig(A)
-% 
+% Eigenvalues of the linear system:
+eigA = eig(A)
+
 % figure;
 % scatter(real(eigA), imag(eigA), 25, 'filled')
 % xlabel('Re{\lambda}')
