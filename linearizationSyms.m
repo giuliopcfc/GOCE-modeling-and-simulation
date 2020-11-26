@@ -81,35 +81,53 @@ dvA = a_ext + (-F1 + F2)/massA;
 
 %% Full system:
 
-% Derivatives of the state variables:
-dYA = [dxA, dvA, dVOut];
-
-dY = [dYFCV, dYA];
-
-J = jacobian(dY,Y);
-
 % Load data:
 config;
+goce = data.goce;
+accelerometer = data.accelerometer;
+FCV = data.FCV;
+thruster = data.thruster;
+const = data.const;
 
-% Substitution of numerical values:
-data_vec = [data.FCV.kI, data.FCV.kProp, data.FCV.kInt, data.FCV.massSpool,...
-    data.FCV.kSpring, data.FCV.c, data.FCV.A0, data.thruster.T2,...
-    data.thruster.p2, data.thruster.kXe, data.const.Ru, data.thruster.e,...
-    data.thruster.deltaV, data.thruster.massIon, data.goce.mass,...
-    data.accelerometer.areaMass, data.accelerometer.mass,...
-    data.accelerometer.eps, data.accelerometer.gap, data.accelerometer.VBias,...
-    data.accelerometer.C, data.accelerometer.kProp, data.accelerometer.kDer];
+% Initial state:
+Y0 = [0 sqrt(4*data.FCV.A0/pi) 0 0 0 0];
 
-Atemp = subs(J, [kI, kPropFCV, kIntFCV, mFCV, kSpring, c, A0, TX, pX, k, R,...
+% Derivatives of the state variables:
+dYA = [dxA, dvA, dVOut];
+dY = [dYFCV, dYA];
+
+% Matrix A:
+JA = jacobian(dY,Y);
+
+data_vecA = [FCV.kI, FCV.kProp, FCV.kInt, FCV.massSpool, FCV.kSpring, FCV.c,...
+    FCV.A0, thruster.T2, thruster.p2, thruster.kXe, const.Ru, thruster.e,...
+    thruster.deltaV, thruster.massIon, goce.mass, accelerometer.areaMass,...
+    accelerometer.mass, accelerometer.eps, accelerometer.gap, accelerometer.VBias,...
+    accelerometer.C, accelerometer.kProp, accelerometer.kDer];
+Atemp = subs(JA, [kI, kPropFCV, kIntFCV, mFCV, kSpring, c, A0, TX, pX, k, R,...
     e, DVT, massIonX, mGOCE, areaA, massA, perm, g, VBias, CF, kPropA,...
-    kDerA], data_vec);
-A = simplify(subs(Atemp, Y, [0 sqrt(4*data.FCV.A0/pi) 0 0 0 0]));
+    kDerA], data_vecA);
 
-% Eigenvalues of the linear system:
-eigA = eig(A)
+A = simplify(subs(Atemp, Y));
 
-figure;
-scatter(real(eigA), imag(eigA), 25, 'filled')
-xlabel('Re{\lambda}')
-ylabel('Im{\lambda}')
-grid on
+% Matrix B:
+JB = jacobian(dY, dragV);
+B = subs(JB, goce.mass);
+
+% Matrix C:
+JC = jacobian(thrust, Y);
+
+data_vecC = [FCV.A0, thruster.deltaV, const.Ru, thruster.T2, thruster.e,...
+    thruster.kXe, thruster.massIon, thruster.p2];
+Ctemp = subs(JC, [A0, DVT, R, TX, e, k, massIonX, pX], data_vecC);
+
+C = simplify(subs(Ctemp, xFCV, Y0(2)));
+
+% % Eigenvalues of the linear system:
+% eigA = eig(A)
+% 
+% figure;
+% scatter(real(eigA), imag(eigA), 25, 'filled')
+% xlabel('Re{\lambda}')
+% ylabel('Im{\lambda}')
+% grid on
