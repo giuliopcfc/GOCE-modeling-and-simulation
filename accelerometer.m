@@ -30,12 +30,6 @@ kDer = data.accelerometer.kDer;
 x = YA(1); v = YA(2); VOut = YA(3);
 
 % BCS for the accelerometer (physical constraints):
-<<<<<<< HEAD
-%%NOTE da Lollo: queste le ho riprese dall'ex2 dell'assignment 2, però devo
-% pensarci un attimo, in linea di massima mi sembra che vadano bene.
-% BISOGNA METTERE g/2!! Giulio non dire cagate!!
-=======
->>>>>>> fe3c01c4d187f58889622c75c89074c93186c104
 if x <= -g
     x = -g;
     if v <= 0
