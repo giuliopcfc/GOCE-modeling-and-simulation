@@ -74,7 +74,7 @@ dx = v;
 dv = a_ext + (-F1 + F2)/massA;
 
 % BCS for the accelerometer acceleration:
-if (x >= g && dv > 0) || (x <= g && dv < 0)
+if (x >= g && dv > 0) || (x <= -g && dv < 0)
     dv = 0;
 end
 
