@@ -29,9 +29,9 @@ Y0GPE = [a0; data.orbit.eccentricity; data.orbit.inclination*pi/180;...
 Y0 = [Y0FCV; Y0A; Y0GPE];
 
 %%% Integration:
-options = odeset('AbsTol',1e-10,'RelTol',1e-8);
+options = odeset('AbsTol',1e-14,'RelTol',1e-13);
 tic
-[T,Y] = ode15s(@odeFun,[0 1e4],Y0,options,data);
+[T,Y] = ode15s(@odeFun,[0 2*2*pi*sqrt(a0^3/data.const.MU_EARTH)],Y0,options,data);
 toc
 
 %% RETRIVE PAROUT:
