@@ -33,7 +33,7 @@ dYFCV = flowControlValve(YFCV,YA(3),data);
 a = YGPE(1); e = YGPE(2); i = YGPE(3);
 OM = YGPE(4); om = YGPE(5); f = YGPE(6);
 
-% Passage from orbital parameters to cartesian coordinates:
+% From orbital parameters to cartesian coordinates:
 [rr,vv] = kep2car(a,e,i,OM,om,f,MU);  
 
 % Aerodynamic Drag:

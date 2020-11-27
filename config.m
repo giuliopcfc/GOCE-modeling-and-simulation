@@ -1,5 +1,7 @@
 data = struct();
 
+%% Project data:
+
 % GOCE:
 data.goce.mass = 300; % GOCE mass [kg]
 data.goce.area = 1.1; % GOCE frontal section [m^2]
@@ -49,3 +51,37 @@ data.const.R_POLAR = 6356.778; % Earth's polar radius [km]
 data.const.R_MEAN = 6371.0088; % Earth's mean radius [km] (from https://en.wikipedia.org/wiki/Earth_radius#Mean_radius)
 data.const.J2 = 0.00108263; % J2 factor
 data.const.Ru = 8314.462; % Universal Gas Constant [J/kmol/K]
+
+%% Compute additional data:
+
+data.FCV.D0 = sqrt(4*data.FCV.A0/pi); % Diameter of the valve's orifice [m^2]
+
+% Semi Major Axis [km]:
+data.orbit.SMAxis = data.orbit.altitude + data.const.R_MEAN; 
+
+% Orbit period:
+data.orbit.period = 2*pi*sqrt(data.orbit.SMAxis^3/data.const.MU_EARTH);
+
+% Initial conditions for state arrays:
+
+% Flow control valve:
+% Initial position of the valve and equilibrium position of the spring,
+% initialized to zero and then computed in main.m:
+data.FCV.x0 = 0; 
+data.ode.Y0FCV = [0; 0; 0];
+
+% Accelerometer:
+data.ode.Y0A = [0; 0; 0];
+
+% GPE:
+data.ode.Y0GPE = [data.orbit.SMAxis; data.orbit.eccentricity; 
+                data.orbit.inclination*pi/180; data.orbit.RAAN*pi/180;
+                data.orbit.argPerigee*pi/180; data.orbit.theta0*pi/180]; 
+            
+% Total array:
+data.ode.Y0 = [data.ode.Y0FCV; data.ode.Y0A; data.ode.Y0GPE; 0];
+
+
+
+
+

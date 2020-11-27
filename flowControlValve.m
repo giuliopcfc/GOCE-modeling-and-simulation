@@ -2,7 +2,7 @@ function  dYFCV = flowControlValve(YFCV,VOut,data)
 
 % Load data:
 kI = data.FCV.kI;
-kProp = data.FCV.kProp; kIint = data.FCV.kInt;
+kProp = data.FCV.kProp; kInt = data.FCV.kInt;
 m = data.FCV.massSpool; kSpring = data.FCV.kSpring; c = data.FCV.c;
 A0 = data.FCV.A0;
 
@@ -26,9 +26,9 @@ if x >= D0
 end
 
 % PI controller:
-i = kProp*VOut + kIint*intVOut;
+i = kProp*VOut + kInt*intVOut;
 
-x0 = D0; % Rest position of the spring [m]
+x0 = data.FCV.x0; % Rest position of the spring [m]
 
 % EOM of the spool:
 dx = v;

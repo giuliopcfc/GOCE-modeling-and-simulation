@@ -32,27 +32,27 @@ Y0GPE = [a0; data.orbit.eccentricity; data.orbit.inclination*pi/180;...
 Y0 = [Y0FCV; Y0A; Y0GPE; 0];
 
 % Time span array:
-tspan = [0:20:2*2*pi*sqrt(a0^3/data.const.MU_EARTH)];
+tspan = [0:50:pi*sqrt(a0^3/data.const.MU_EARTH)];
 
-odeOptions = odeset('AbsTol',1e-14,'RelTol',1e-13);
+odeOptions = odeset('AbsTol',1e-10,'RelTol',1e-8);
 
 %% Optimization: 
 
 % Initial guess:
 x0 = [ data.accelerometer.kProp    
-       data.accelerometer.kDer     
+       data.accelerometer.kDer
        data.FCV.massSpool          
        data.FCV.kProp              
        data.FCV.kInt               
        data.FCV.kI               ];            
 
-lb = x0'*0;
-ub = [Inf Inf 3e-1 Inf Inf Inf];
+lb = 0*x0';
+ub = [data.accelerometer.kProp+1 data.accelerometer.kDer+1 3e-1 1e10 1e10 1e10]';
 
 options = optimset('Display','Iter','TolFun',1e-5);
 
 x = fmincon(@(x) costFun(x, tspan, Y0, odeOptions, data),x0,...
- [],[],[],[],lb,[],[],options);
+ [],[],[],[],lb,ub,[],options);
 
 %% Solution found:
 data.accelerometer.kProp    = x(1);
@@ -62,13 +62,15 @@ data.FCV.kProp              = x(4);
 data.FCV.kInt               = x(5);
 data.FCV.kI                 = x(6);
 
+odeOptions = odeset('AbsTol',1e-14,'RelTol',1e-13);
 tspan = [0 2*2*pi*sqrt(a0^3/data.const.MU_EARTH)];
 [T,Y,out] = integrateOdeFun(@odeFun, tspan, Y0, odeOptions, data);
 
+plots
 
 %% Functions:
 function J = costFun(x, tspan, Y0, odeOptions, data)
-x
+
 data.accelerometer.kProp    = x(1);
 data.accelerometer.kDer     = x(2);
 data.FCV.massSpool          = x(3);
@@ -76,10 +78,7 @@ data.FCV.kProp              = x(4);
 data.FCV.kInt               = x(5);
 data.FCV.kI                 = x(6);
 
-[~,Y,out] = integrateOdeFun(@odeFun, tspan, Y0, odeOptions, data);
+[~,~,out] = integrateOdeFun(@odeFun, tspan, Y0, odeOptions, data);
 
-fRes = norm(out.thrust + out.dragV);
-fRes0 = 6e-3;
-
-J = Y(end,end) + 1e-4*exp(-(fRes - fRes0));
+J = norm(abs(out.thrust + out.dragV));
 end
