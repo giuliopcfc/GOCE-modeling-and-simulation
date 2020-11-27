@@ -1,4 +1,4 @@
-function thrust = ionThruster(xFCV,data)
+function [thrust, mDot] = ionThruster(xFCV,data)
 % 
 % Function to compute the thrust.
 % 

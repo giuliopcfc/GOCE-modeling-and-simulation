@@ -11,15 +11,15 @@ xlabel('Time [s]'), ylabel('Spool Postion [mm]');
 grid 
 
 figure,
-plot(T,thrust)
+plot(T,out.thrust)
 title('Thrust')
 
 figure
-plot(T,dragV)
+plot(T,out.dragV)
 title('DragV')
 
 figure
-plot(T, dragV + thrust)
+plot(T, out.dragV + out.thrust)
 title('Thrust + DragV')
 
 figure,
@@ -29,4 +29,8 @@ title('Int VOut')
 figure,
 plot(T,Y(:,6))
 title('VOut')
+
+figure,
+plot(T,out.VC)
+title('VC')
  

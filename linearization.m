@@ -20,7 +20,8 @@ A = [  A1      B1*C2
  %AGGIORNARE LE EQUATIONI SE CAMBIANO!!!
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-clear;
+config;
+
 syms intVOut xFCV vFCV xA vA VOut
 Y1 = [intVOut xFCV vFCV xA vA VOut];
 
@@ -98,7 +99,6 @@ dvA = a_ext + (-F1 + F2)/massA;
 %% Full system: Flow Control Valve + Accelerometer
 
 % Load data:
-config;
 goce = data.goce;
 accelerometer = data.accelerometer;
 FCV = data.FCV;

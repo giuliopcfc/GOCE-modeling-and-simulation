@@ -1,4 +1,4 @@
-function dYA = accelerometer(YA, thrust, dragV, data)
+function [dYA, VC] = accelerometer(YA, thrust, dragV, data)
 % 
 % Function to compute the derivative of the state of a capacitive
 % accelerometer + read-out circuit for voltage.

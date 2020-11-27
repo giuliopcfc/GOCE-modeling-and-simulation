@@ -1,4 +1,4 @@
-function [dY,parout] = odeFun(t,Y,data)
+function [dY,out] = odeFun(t,Y,data)
 %
 % Right Hand Side of the ODE system.
 %  
@@ -9,6 +9,7 @@ function [dY,parout] = odeFun(t,Y,data)
 % 
 % OUTPUT:
 %  dY       Time derivative of the state array
+%  out      Output struct
 % 
 % NOTES:
 %  Y(1:3) = YFCV = [intVOut; xFCV; vFCV]
@@ -26,7 +27,7 @@ YFCV = Y(1:3); YA = Y(4:6); YGPE = Y(7:12);
 dYFCV = flowControlValve(YFCV,YA(3),data);
 
 % Ion Thruster:
-thrust = ionThruster(YFCV(2),data);
+[thrust, mDot] = ionThruster(YFCV(2),data);
 
 % Initialize keplerian elements:
 a = YGPE(1); e = YGPE(2); i = YGPE(3);
@@ -41,14 +42,17 @@ aDrag = pertDrag(rr,vv,data);
 dragV = data.goce.mass*dot(aDrag,vv/norm(vv));
 
 % Accelerometer:
-dYA = accelerometer(YA, thrust, dragV, data);
+[dYA,VC] = accelerometer(YA, thrust, dragV, data);
 
 % Orbital Mechanics:
 dYGPE = GPE(YGPE,rr,vv,aDrag,thrust,data);
 
-dY = [dYFCV; dYA; dYGPE];
+dY = [dYFCV; dYA; dYGPE; mDot];
 
 % Output parameters:
-parout = [thrust; dragV];
+out = struct();
+out.thrust = thrust;
+out.dragV  = dragV;
+out.VC     = VC;
 
 end
