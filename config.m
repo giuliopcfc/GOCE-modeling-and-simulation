@@ -62,29 +62,33 @@ data.orbit.SMAxis = data.orbit.altitude + data.const.R_MEAN;
 % Orbit period:
 data.orbit.period = 2*pi*sqrt(data.orbit.SMAxis^3/data.const.MU_EARTH);
 
-% Initial conditions for state arrays:
-
-% Flow control valve:
-% Initial position of the valve and equilibrium position of the spring,
-% initialized to zero and then computed in main.m:
-data.FCV.x0 = 0; 
-data.ode.Y0FCV = [0; 0; 0];
-
-% Accelerometer:
-data.ode.Y0A = [0; 0; 0];
-
+% Initial conditions for state array:
 % GPE:
 data.ode.Y0GPE = [data.orbit.SMAxis; data.orbit.eccentricity; 
                 data.orbit.inclination*pi/180; data.orbit.RAAN*pi/180;
                 data.orbit.argPerigee*pi/180; data.orbit.theta0*pi/180]; 
             
-% Total array:
-data.ode.Y0 = [data.ode.Y0FCV; data.ode.Y0A; data.ode.Y0GPE; 0];
+% Full state array:
+data.ode.Y0 = [zeros(6,1); data.ode.Y0GPE; 0];
 
 % Set the initial position of the flow control valve and the equilibrium
 % position of the spring such that the thrust equals the drag at t = 0:
+data.FCV.x0 = 0; data.noThrust.switch = 0; data.blockFCV.switch = 0;
 [~,out] = odeFun(0,data.ode.Y0,data);
 
-data.FCV.x0 = fzero(@(xFCV) out.dragV + ionThruster(xFCV,data), data.FCV.x0);
+data.FCV.x0 = fzero(@(xFCV) out.dragV + ionThruster(xFCV,data), [0 6e-3]);
 
 data.ode.Y0(2) = data.FCV.x0;
+
+%% Off-nominal conditions:
+
+data.noThrust.switch = 0;
+data.noThrust.tInitial = 5000;
+data.noThrust.tFinal = 5000 + data.orbit.period;
+
+data.blockFCV.switch = 0;
+data.blockFCV.tInitial = 5000;
+data.blockFCV.tFinal = 5000 + 2*data.orbit.period;
+
+
+

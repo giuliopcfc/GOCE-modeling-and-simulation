@@ -1,4 +1,4 @@
-function  dYFCV = flowControlValve(YFCV,VOut,data)
+function  dYFCV = flowControlValve(t,YFCV,VOut,data)
 
 % Load data:
 kI = data.FCV.kI;
@@ -39,6 +39,15 @@ dv = 1/m*( kSpring*(x0 - x) - kI*i - c*v );
 if (x <= 0 && dv < 0) || (x >= D0 && dv > 0)
     dv = 0;
 end
+
+% Off-nominal condition:
+if data.blockFCV.switch 
+    if t >= data.blockFCV.tInitial && t <= data.blockFCV.tFinal
+        dx = 0;
+        dv = 0;
+    end
+end
+    
 
 % Derivatives of the state variables:
 dYFCV = [VOut; dx; dv];

@@ -24,11 +24,19 @@ MU = data.const.MU_EARTH;
 YFCV = Y(1:3); YA = Y(4:6); YGPE = Y(7:12);
 
 % Flow Control Valve:
-dYFCV = flowControlValve(YFCV,YA(3),data);
+dYFCV = flowControlValve(t,YFCV,YA(3),data);
 
 % Ion Thruster:
 [thrust, mDot] = ionThruster(YFCV(2),data);
 
+% Off-nominal condition:
+if data.noThrust.switch 
+    if t >= data.noThrust.tInitial && t <= data.noThrust.tFinal
+        thrust = 0;
+    end
+end
+
+thrust = thrust +  data.noise(t);
 % Initialize keplerian elements:
 a = YGPE(1); e = YGPE(2); i = YGPE(3);
 OM = YGPE(4); om = YGPE(5); f = YGPE(6);

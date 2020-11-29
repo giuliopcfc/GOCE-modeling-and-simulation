@@ -23,14 +23,11 @@ plot(T, out.dragV + out.thrust)
 title('Thrust + DragV')
 
 figure,
-plot(T,Y(:,1))
-title('Int VOut')
+plot(T,Y(:,4))
+title('x Acc')
 
 figure,
 plot(T,Y(:,6))
 title('VOut')
 
-figure,
-plot(T,out.VC)
-title('VC')
  

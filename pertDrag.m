@@ -11,10 +11,7 @@ function aDrag = pertDrag(rr,vv,data)
 %  aDrag [3,1]    Perturbing acceleration vector due to aerodynamic drag [m/s^2]
 % 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% SOSTITUIRE CON NUOVA FUNZIONE (COSPAR):
 rho = density(rr,data);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 vRel = (vv - cross(data.const.W_EARTH*[0;0;1],rr))*1000; % Air Relative Velocity [m/s]
 

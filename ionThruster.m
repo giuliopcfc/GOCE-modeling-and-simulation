@@ -10,8 +10,7 @@ function [thrust, mDot] = ionThruster(xFCV,data)
 %  thrust             Force [N]
 % 
 
-A0 = data.FCV.A0;
-D0 = sqrt(4*A0/pi);
+D0 = data.FCV.D0;
 
 % BCS on xFCV:
 if xFCV > D0
