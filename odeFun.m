@@ -36,7 +36,6 @@ if data.noThrust.switch
     end
 end
 
-thrust = thrust +  data.noise(t);
 % Initialize keplerian elements:
 a = YGPE(1); e = YGPE(2); i = YGPE(3);
 OM = YGPE(4); om = YGPE(5); f = YGPE(6);
