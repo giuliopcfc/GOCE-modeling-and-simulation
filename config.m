@@ -89,6 +89,3 @@ data.noThrust.tFinal = 5000 + data.orbit.period;
 data.blockFCV.switch = 0;
 data.blockFCV.tInitial = 5000;
 data.blockFCV.tFinal = 5000 + 2*data.orbit.period;
-
-
-

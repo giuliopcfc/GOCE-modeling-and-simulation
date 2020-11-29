@@ -1,4 +1,16 @@
 function  dYFCV = flowControlValve(t,YFCV,VOut,data)
+%
+% Right Hand Side of the ODE system.
+%  
+% INPUT:
+%  t                Time instant
+%  YFCV [3,1]       State array
+%  VOut             Output voltage of the read-out circuit
+%  data             data struct
+% 
+% OUTPUT:
+%  dYFCV [3,1]      Time derivative of the state array
+%  out              Output struct
 
 % Load data:
 kI = data.FCV.kI;
