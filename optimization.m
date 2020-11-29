@@ -32,7 +32,7 @@ Y0GPE = [a0; data.orbit.eccentricity; data.orbit.inclination*pi/180;...
 Y0 = [Y0FCV; Y0A; Y0GPE; 0];
 
 % Time span array:
-tspan = [0:50:pi*sqrt(a0^3/data.const.MU_EARTH)];
+tspan = [0:10:pi*sqrt(a0^3/data.const.MU_EARTH)];
 
 odeOptions = odeset('AbsTol',1e-10,'RelTol',1e-8);
 
@@ -49,11 +49,11 @@ x0 = [ data.accelerometer.kProp
 lb = 0*x0';
 ub = [data.accelerometer.kProp+1 data.accelerometer.kDer+1 3e-1 1e10 1e10 1e10]';
 
-options = optimset('Display','Iter','TolFun',1e-5);
-
+options = optimset('Display','Iter','TolFun',1e-10);
+tic;
 x = fmincon(@(x) costFun(x, tspan, Y0, odeOptions, data),x0,...
  [],[],[],[],lb,ub,[],options);
-
+toc
 %% Solution found:
 data.accelerometer.kProp    = x(1);
 data.accelerometer.kDer     = x(2);
