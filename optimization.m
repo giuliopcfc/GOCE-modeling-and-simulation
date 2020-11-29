@@ -16,7 +16,7 @@ config;
 %%% Initial conditions:
 D0 = sqrt(4*data.FCV.A0/pi);
 % Initial State for flow control valve:
-Y0FCV = [0; D0; 0];
+Y0FCV = [0; data.FCV.x0; 0];
 
 % Initial State for accelerometer:
 Y0A = [0; 0; 0];
@@ -47,7 +47,7 @@ x0 = [ data.accelerometer.kProp
        data.FCV.kI               ];            
 
 lb = 0*x0';
-ub = [data.accelerometer.kProp+1 data.accelerometer.kDer+1 3e-1 1e10 1e10 1e10]';
+ub = [data.accelerometer.kProp/10 data.accelerometer.kDer/10 3e-1 1e10 1e10 1e10]';
 
 options = optimset('Display','Iter','TolFun',1e-10);
 tic;
