@@ -1,6 +1,9 @@
-function [T,Y,out] = integrateOdeFun(odeFun, tspan, Y0, options, data)
+function [sol,T,Y,out] = integrateOdeFun(odeFun, tspan, Y0, options, data)
 
-[T,Y] = ode15s(odeFun,tspan,Y0,options,data);
+sol = ode15s(odeFun,tspan,Y0,options,data);
+
+T = sol.x';
+Y = sol.y';
 
 out = struct();
 out.thrust = T; out.dragV = T; out.VC = T;
