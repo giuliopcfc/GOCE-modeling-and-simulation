@@ -30,6 +30,15 @@ dYFCV = flowControlValve(t,YFCV,YA(3),data);
 % Ion Thruster:
 [thrust, mDot] = ionThruster(YFCV(2),data);
 
+if data.accelerometer.noiseSwitch || data.thruster.noiseSwitch ...
+        || (data.accelerometer.noiseSwitch && data.thruster.noiseSwitch)
+    noise = data.noise(t);
+else
+    noise = 0;
+end
+
+thrust = thrust + data.thruster.noiseSwitch*1e-4*noise;
+
 % Off-nominal condition:
 if data.noThrust.switch 
     if t >= data.noThrust.tInitial && t <= data.noThrust.tFinal
@@ -51,6 +60,8 @@ dragV = data.goce.mass*dot(aDrag,vv/norm(vv));
 
 % Accelerometer:
 [dYA,VC] = accelerometer(YA, thrust, dragV, data);
+
+dYA(2) = dYA(2) + data.accelerometer.noiseSwitch*1e-9*noise;
 
 % Orbital Mechanics:
 dYGPE = GPE(YGPE,rr,vv,aDrag,thrust,data);
