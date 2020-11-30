@@ -44,10 +44,14 @@ x0 = [ data.accelerometer.kProp
        data.FCV.massSpool          
        data.FCV.kProp              
        data.FCV.kInt               
-       data.FCV.kI               ];            
+       data.FCV.kI               ];
 
-lb = 0*x0';
-ub = [data.accelerometer.kProp/10 data.accelerometer.kDer/10 3e-1 1e10 1e10 1e10]';
+% percentage values of lower and upper boundaries wrt the provided data
+lbPct = [0.01; 0.01; 0.001; 50; 1; 50];
+ubPct = [0.1; 0.1; 0.05; 300; 5; 300];
+
+lb = lbPct.*x0;
+ub = ubPct.*x0;
 
 options = optimset('Display','Iter','TolFun',1e-10);
 tic;
