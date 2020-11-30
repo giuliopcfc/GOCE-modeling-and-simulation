@@ -15,6 +15,7 @@ function [dY,out] = odeFun(t,Y,data)
 %  Y(1:3) = YFCV = [intVOut; xFCV; vFCV]
 %  Y(4:6) = YA = [xMass; vMass; VOut]
 %  Y(7:12) = YGPE = [a; e; i; OM; om; theta]
+%  Y(13) = Propellant mass consumed
 % 
 
 % Load data:

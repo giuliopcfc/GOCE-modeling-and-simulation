@@ -1,9 +1,23 @@
-function [sol,T,Y,out] = integrateOdeFun(odeFun, tspan, Y0, options, data)
+function [T,Y,out] = integrateOdeFun(odeFun, tspan, Y0, options, data)
+%
+% Function to integrate the ode function of the system and retrieve other
+% parameters.
+%  
+% INPUT:
+%   odeFun          Ode function
+%   tspan           Time span array
+%   Y0              Initial conditions for state array
+%   options         Options for ode15s integrator
+%   data            Input data struct
+% 
+% OUTPUT:
+%   T [nT,1]        Time array
+%   Y [nT,nY]       State matrix
+%   out             Output struct that contains the time evolution 
+%                   of some parameters of the system 
+%
 
-sol = ode15s(odeFun,tspan,Y0,options,data);
-
-T = sol.x';
-Y = sol.y';
+[T,Y] = ode15s(odeFun,tspan,Y0,options,data);
 
 out = struct();
 out.thrust = T; out.dragV = T; out.VC = T;
@@ -16,4 +30,8 @@ for i = 1:length(T)
     out.dragV(i) = outTemp.dragV;
     out.VC(i) = outTemp.VC;
   
+end
+
+out.residualAcc = (out.thrust + out.dragV)/data.goce.mass;
+
 end

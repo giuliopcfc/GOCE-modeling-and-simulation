@@ -8,6 +8,7 @@ function [thrust, mDot] = ionThruster(xFCV,data)
 % 
 % OUTPUT:
 %  thrust             Force [N]
+%  mDot               Propellant mass consumption rate
 % 
 
 D0 = data.FCV.D0;

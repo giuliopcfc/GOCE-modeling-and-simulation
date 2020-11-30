@@ -83,9 +83,9 @@ data.ode.Y0(2) = data.FCV.x0;
 %% Off-nominal conditions:
 
 data.noThrust.switch = 0;
-data.noThrust.tInitial = 5000;
-data.noThrust.tFinal = 5000 + data.orbit.period;
+data.noThrust.tInitial = 100;
+data.noThrust.tFinal = Inf;
 
 data.blockFCV.switch = 0;
-data.blockFCV.tInitial = 5000;
-data.blockFCV.tFinal = 5000 + 2*data.orbit.period;
+data.blockFCV.tInitial = 100;
+data.blockFCV.tFinal = Inf;

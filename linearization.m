@@ -15,38 +15,35 @@ A = [  A1      B1*C2
        B2*C1      A2  ];
 %}
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- %AGGIORNARE LE EQUATIONI SE CAMBIANO!!!
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 config;
+
+%% Flow Control Valve + Accelerometer:
 
 syms intVOut xFCV vFCV xA vA VOut
 Y1 = [intVOut xFCV vFCV xA vA VOut];
 
-%% FCV:
-% Declaration of symbolic variables:
-syms kI kPropFCV kIntFCV mFCV kSpring c A0
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% FCV %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-D0 = sqrt(4*A0/pi); % Diameter of the orifice
+% Declaration of symbolic variables:
+syms kI kPropFCV kIntFCV mFCV kSpring c
 
 % PI controller:
 iFCV = kPropFCV*VOut + kIntFCV*intVOut;
 
-YGPE0 = D0; % Rest position of the spring [m]
-
 % EOM of the spool:
 dxFCV = vFCV;
 
-dvFCV = 1/mFCV*( kSpring*(YGPE0 - xFCV) - kI*iFCV - c*vFCV );
+dvFCV = 1/mFCV*( kSpring*(data.FCV.x0 - xFCV) - kI*iFCV - c*vFCV );
 
 % Derivatives of the state variables:
 dYFCV = [VOut, dxFCV, dvFCV];
 
-%% Ion Thruster:
+%%%%%%%%%%%%%%%%%%%%%%%% Ion Thruster %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % Declaration of symbolic variables:
-syms TX pX k R e DVT massIonX
+syms A0 TX pX k R e DVT massIonX
+
+D0 = sqrt(4*A0/pi); % Diameter of the valve orifice
 
 % assigning the value to z
 z = 1-xFCV/D0;
@@ -61,7 +58,8 @@ vAcc = sqrt(2*e*DVT/massIonX);
 
 thrust = mDot*vAcc;
 
-%% Accelerometer:
+%%%%%%%%%%%%%%%%%%%%%%%% Accelerometer %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % Declaration of symbolic variables:
 syms mGOCE areaA massA perm g VBias CF kPropA kDerA
 syms dragV
@@ -74,7 +72,7 @@ C2 = perm*areaA/(g + xA);
 Vx = xA/g*VBias;
 
 % Acceleration of the seismic mass due to the acceleration of the s/c:
-a_ext = (thrust + dragV)/mGOCE; 
+a_ext = (thrust + dragV)/mGOCE;
 
 % Current flowing from the seismic mass:
 dC = perm*areaA*(1/(g + xA)^2 + 1/(g - xA)^2);
@@ -96,7 +94,7 @@ F2 = 0.5*C2*DV2^2/(g + xA);
 dxA = vA;
 dvA = a_ext + (-F1 + F2)/massA;
 
-%% Full system: Flow Control Valve + Accelerometer
+%%%%%%%%%%%%%%%%%%%%%%%% FCV + Accelerometer %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Load data:
 goce = data.goce;
@@ -106,7 +104,7 @@ thruster = data.thruster;
 const = data.const;
 
 % Initial state:
-Y0 = [0 sqrt(4*data.FCV.A0/pi)-1e-4 0 0 0 0];
+Y0 = data.ode.Y0(1:6)';
 
 % Derivatives of the state variables:
 dYA = [dxA, dvA, dVOut];
@@ -143,26 +141,26 @@ C1 = simplify(subs(Ctemp, xFCV, Y0(2)));
 
 %% Gauss Planetary equations:
 
-% Orbital Mechanics:
-a0 = data.orbit.altitude + data.const.R_MEAN; % Initial Semi Major Axis [km] 
+YGPE0 = data.ode.Y0GPE;
 
-YGPE0 =     [a0; data.orbit.eccentricity; data.orbit.inclination*pi/180;...
-        data.orbit.argPerigee*pi/180; data.orbit.RAAN*pi/180; data.orbit.theta0*pi/180]; 
+% Compute B2:
 
- % Compute A,B and C with central difference scheme:
- A2 = nan(6,6); B2 = nan(6,1); C2 = nan(1,6);
- 
- % Variations on thrust:
- T0 = 0; 
- deltaT = 1e-3;
- T_p = T0 + deltaT; T_m = T0 - deltaT;
- 
- [dYGPE_p] = funGPE(YGPE0,T_p,data);
- [dYGPE_m] = funGPE(YGPE0,T_m,data);
- 
- B2 = (dYGPE_p - dYGPE_m)/2/deltaT;
- 
- for i = 1:6
+% Variations on thrust:
+T0 = 0;
+deltaT = 1e-3;
+T_p = T0 + deltaT; T_m = T0 - deltaT;
+
+% Variations of RHS of GPE:
+[dYGPE_p] = funGPE(YGPE0,T_p,data);
+[dYGPE_m] = funGPE(YGPE0,T_m,data);
+
+% Central difference scheme
+B2 = (dYGPE_p - dYGPE_m)/2/deltaT;
+
+% Compute A and C with central difference scheme:
+A2 = nan(6,6); C2 = nan(1,6);
+
+for i = 1:6
     e = max(sqrt(eps),sqrt(eps)*abs(YGPE0(i))); % increment of x(i)
     x_p = YGPE0;    x_p(i) = YGPE0(i) + e;
     x_m = YGPE0;    x_m(i) = YGPE0(i) - e;
@@ -173,35 +171,38 @@ YGPE0 =     [a0; data.orbit.eccentricity; data.orbit.inclination*pi/180;...
     
     A2(:,i) = (dYGPE_p - dYGPE_m)/2/e;
     
-    C2(:,i) = (dragV_p - dragV_m)/2/e; 
- end
- 
- %% Augmented System:
- 
- A = [  A1      B1*C2
-       B2*C1      A2  ];
-   
- A = double(A);
-   
+    C2(:,i) = (dragV_p - dragV_m)/2/e;
+end
+
+%% Augmented System:
+
+A = [  A1         B1*C2
+       B2*C1      A2    ];
+
+A = double(A);
+
+format shortE
 eigA = eig(A)
+
+clearvars -except A eigA
 
 %% Functions:
 
 function [dYGPE, dragV] = funGPE(YGPE,thrust,data)
-% 
-% GPE Gauss Planetary Equations. Function to compute the derivative of the 
-% keplerian elements' state array and the drag force component along .
-%  
+%
+% GPE Gauss Planetary Equations. Function to compute the derivative of the
+% keplerian elements' state array and the drag force component along.
+%
 % INPUT:
 %  YGPE  [6,1]      Keplerian elements array
 %  rr [3,1]         Position vector in inertial frame [km]
 %  vv [3,1]         Velocity vector in inertial frame [km/s]
 %  thrust           Value of thrust [N]
 %  data             data struct
-% 
+%
 % OUTPUT:
 %  dYGPE [6,1]      Time derivative of the state vector
-% 
+%
 
 % Load data:
 MU = data.const.MU_EARTH;
@@ -212,7 +213,7 @@ OM = YGPE(4); om = YGPE(5); f = YGPE(6);
 
 % Perturbing acceleration:
 % Passage from orbital parameters to cartesian coordinates:
-[rr,vv] = kep2car(a,e,i,OM,om,f,MU);  
+[rr,vv] = kep2car(a,e,i,OM,om,f,MU);
 
 % Thrust:
 aThrust = thrust/data.goce.mass/1000; % [km/s^2]
@@ -239,8 +240,8 @@ an = aPert(2);          % Normal component of perturbing acceleration
 ah = aPert(3);          % Out of plane component of perturbing acceleration
 
 % Orbit parameters:
-b = a*sqrt(1-e^2); 
-p = b^2/a; 
+b = a*sqrt(1-e^2);
+p = b^2/a;
 r = p/(1+e*cos(f));
 v = sqrt(2*MU/r - MU/a);
 n = sqrt(MU/a^3);
@@ -257,7 +258,7 @@ di = r*cos(fs)/h*ah;
 dOM = r*sin(fs)/h/sin(i)*ah;
 
 dom = 1/e/v*(2*sin(f)*at + (2*e + r/a*cos(f))*an) - ...
-      r*sin(fs)*cos(i)/h/sin(i)*ah;
+    r*sin(fs)*cos(i)/h/sin(i)*ah;
 
 df = h/r^2 - 1/e/v*(2*sin(f)*at + (2*e + r/a*cos(f))*an);
 
@@ -267,5 +268,6 @@ dYGPE = [da;de;di;dOM;dom;df];
 % Drag component in the direction of velocity:
 dragV = data.goce.mass*dot(aDrag,vv/norm(vv));
 end
+
 
 
