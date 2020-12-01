@@ -77,7 +77,7 @@ data.FCV.kProp              = x(4);
 data.FCV.kInt               = x(5);
 data.FCV.kI                 = x(6);
 
-odeOptions = odeset('AbsTol',1e-14,'RelTol',1e-13);
+odeOptions = odeset('AbsTol',1e-8,'RelTol',1e-6);
 tspan = [0 2*2*pi*sqrt(a0^3/data.const.MU_EARTH)];
 [T,Y,out] = integrateOdeFun(@odeFun, tspan, Y0, odeOptions, data);
 
