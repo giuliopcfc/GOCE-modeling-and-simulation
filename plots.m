@@ -1,4 +1,5 @@
-set(0,'defaultTextInterpreter','latex');
+set (0,'defaulttextInterpret','Latex');
+set(0,'defaultAxesTickLabelInterpreter','latex');
 
 figure,
 plot(T,Y(:,7))
