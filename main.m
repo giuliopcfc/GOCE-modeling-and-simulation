@@ -98,7 +98,7 @@ if simType.orbitDecay
     dataOD.noThrust.tFinal = Inf;
     
     % Time span array:
-    tspan = [0 515*data.orbit.period];
+    tspan = [0 515*dataOD.orbit.period];
     
     % Integration:
     options = odeset('AbsTol',1e-8,'RelTol',1e-6);
