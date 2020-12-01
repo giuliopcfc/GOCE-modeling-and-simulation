@@ -9,30 +9,10 @@ data.FCV.kInt               Controller Integral Gain
 data.FCV.kI                 Proportionality Coeffcient Current - Spool
 %}
 
-config; 
-
-%% Integrate:
-
-%%% Initial conditions:
-D0 = sqrt(4*data.FCV.A0/pi);
-% Initial State for flow control valve:
-Y0FCV = [0; data.FCV.x0; 0];
-
-% Initial State for accelerometer:
-Y0A = [0; 0; 0];
-
-% Orbital Mechanics:
-a0 = data.orbit.altitude + data.const.R_MEAN; % Initial Semi Major Axis [km] %%%% R_MEAN o R_EQUATORIAL?? %%%%
-
-% Initial State for GPEs:
-Y0GPE = [a0; data.orbit.eccentricity; data.orbit.inclination*pi/180;...
-        data.orbit.argPerigee*pi/180; data.orbit.RAAN*pi/180; data.orbit.theta0*pi/180]; 
-    
-% Assembly initial state array:
-Y0 = [Y0FCV; Y0A; Y0GPE; 0];
+%% Integration:
 
 % Time span array:
-tspan = [0:10:pi*sqrt(a0^3/data.const.MU_EARTH)];
+tspan = [0: 10 : data.orbit.period];
 
 odeOptions = odeset('AbsTol',1e-10,'RelTol',1e-8);
 
@@ -64,24 +44,20 @@ ubPct = [ 1+1e-4
 lb = lbPct.*x0;
 ub = ubPct.*x0;
 
-options = optimset('Display','Iter','TolFun',1e-10);
-tic;
-x = fmincon(@(x) costFun(x, tspan, Y0, odeOptions, data),x0,...
- [],[],[],[],lb,ub,[],options);
-toc
+optOptions = optimset('Display','Iter','TolFun',1e-10);
+
+x = fmincon(@(x) costFun(x, tspan, data.ode.Y0, odeOptions, data),x0,...
+ [],[],[],[],lb,ub,[],optOptions);
+
 %% Solution found:
-data.accelerometer.kProp    = x(1);
-data.accelerometer.kDer     = x(2);
-data.FCV.massSpool          = x(3);
-data.FCV.kProp              = x(4);
-data.FCV.kInt               = x(5);
-data.FCV.kI                 = x(6);
+dataOpt = data;
 
-odeOptions = odeset('AbsTol',1e-8,'RelTol',1e-6);
-tspan = [0 2*2*pi*sqrt(a0^3/data.const.MU_EARTH)];
-[T,Y,out] = integrateOdeFun(@odeFun, tspan, Y0, odeOptions, data);
-
-plots
+dataOpt.accelerometer.kProp    = x(1);
+dataOpt.accelerometer.kDer     = x(2);
+dataOpt.FCV.massSpool          = x(3);
+dataOpt.FCV.kProp              = x(4);
+dataOpt.FCV.kInt               = x(5);
+dataOpt.FCV.kI                 = x(6);
 
 %% Functions:
 function J = costFun(x, tspan, Y0, odeOptions, data)

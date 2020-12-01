@@ -1,5 +1,3 @@
-config;
-
 syms intVOut xFCV vFCV xAcc vAcc VOut a e i OM om theta 
 
 Y = [intVOut xFCV vFCV xAcc vAcc VOut a e i OM om theta];

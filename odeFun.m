@@ -25,21 +25,28 @@ MU = data.const.MU_EARTH;
 YFCV = Y(1:3); YA = Y(4:6); YGPE = Y(7:12);
 
 % Flow Control Valve:
-dYFCV = flowControlValve(t,YFCV,YA(3),data);
+dYFCV = flowControlValve(YFCV,YA(3),data);
 
-% Ion Thruster:
-[thrust, mDot] = ionThruster(YFCV(2),data);
+% Off-Nominal Condition: Blockage of flow control valve:
+if data.blockFCV.switch 
+    if t >= data.blockFCV.tInitial && t <= data.blockFCV.tFinal
+        dYFCV(2:3) = 0;
+    end
+end
 
-if data.accelerometer.noiseSwitch || data.thruster.noiseSwitch ...
-        || (data.accelerometer.noiseSwitch && data.thruster.noiseSwitch)
-    noise = data.noise(t);
+% Off-Nominal Condition: Noise:
+if data.accelerometer.noiseSwitch || data.thruster.noiseSwitch 
+    rng(floor(t/1)) % rng seed
+    noise = rand-0.5;
 else
     noise = 0;
 end
 
-thrust = thrust + data.thruster.noiseSwitch*1e-4*noise;
+% Ion Thruster:
+[thrust, mDot] = ionThruster(YFCV(2),data);
+thrust = thrust + data.thruster.noiseSwitch*data.thruster.noiseMagn*noise;
 
-% Off-nominal condition:
+% Off-Nominal Condition: No Thrust:
 if data.noThrust.switch 
     if t >= data.noThrust.tInitial && t <= data.noThrust.tFinal
         thrust = 0;
@@ -61,7 +68,8 @@ dragV = data.goce.mass*dot(aDrag,vv/norm(vv));
 % Accelerometer:
 [dYA,VC] = accelerometer(YA, thrust, dragV, data);
 
-dYA(2) = dYA(2) + data.accelerometer.noiseSwitch*1e-9*noise;
+dYA(2) = dYA(2) + ...
+        data.accelerometer.noiseSwitch*data.accelerometer.noiseMagn*noise;
 
 % Orbital Mechanics:
 dYGPE = GPE(YGPE,rr,vv,aDrag,thrust,data);

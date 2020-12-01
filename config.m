@@ -52,6 +52,22 @@ data.const.R_MEAN = 6371.0088; % Earth's mean radius [km] (from https://en.wikip
 data.const.J2 = 0.00108263; % J2 factor
 data.const.Ru = 8314.462; % Universal Gas Constant [J/kmol/K]
 
+
+%% Off-nominal conditions:
+
+data.noThrust.switch = 0;
+data.noThrust.tInitial = 0;
+data.noThrust.tFinal = 0;
+
+data.blockFCV.switch = 0;
+data.blockFCV.tInitial = 0;
+data.blockFCV.tFinal = 0;
+
+data.thruster.noiseSwitch = 0;
+data.thruster.noiseMagn = 0;
+data.accelerometer.noiseSwitch = 0;
+data.accelerometer.noiseMagn = 0;
+
 %% Compute additional data:
 
 data.FCV.D0 = sqrt(4*data.FCV.A0/pi); % Diameter of the valve's orifice [m^2]
@@ -82,15 +98,3 @@ data.FCV.x0 = fzero(@(xFCV) out.dragV + ionThruster(xFCV,data), [0 6e-3]);
 
 data.ode.Y0(2) = data.FCV.x0;
 
-%% Off-nominal conditions:
-
-data.noThrust.switch = 0;
-data.noThrust.tInitial = 100;
-data.noThrust.tFinal = Inf;
-
-data.thruster.noiseSwitch = 0;
-data.accelerometer.noiseSwitch = 0;
-
-data.blockFCV.switch = 0;
-data.blockFCV.tInitial = 100;
-data.blockFCV.tFinal = Inf;

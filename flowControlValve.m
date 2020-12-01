@@ -1,9 +1,8 @@
-function  dYFCV = flowControlValve(t,YFCV,VOut,data)
+function  dYFCV = flowControlValve(YFCV,VOut,data)
 %
 % Right Hand Side of the ODE system.
 %  
 % INPUT:
-%  t                Time instant
 %  YFCV [3,1]       State array
 %  VOut             Output voltage of the read-out circuit
 %  data             data struct
@@ -51,16 +50,7 @@ dv = 1/m*( kSpring*(x0 - x) - kI*i - c*v );
 if (x <= 0 && dv < 0) || (x >= D0 && dv > 0)
     dv = 0;
 end
-
-% Off-nominal condition:
-if data.blockFCV.switch 
-    if t >= data.blockFCV.tInitial && t <= data.blockFCV.tFinal
-        dx = 0;
-        dv = 0;
-    end
-end
     
-
 % Derivatives of the state variables:
 dYFCV = [VOut; dx; dv];
 
