@@ -19,16 +19,16 @@ odeOptions = odeset('AbsTol',1e-10,'RelTol',1e-8);
 %% Optimization: 
 
 % Initial guess:
-x0 = [ data.accelerometer.kProp/10    
-       data.accelerometer.kDer/10
+x0 = [ data.accelerometer.kProp    
+       data.accelerometer.kDer
        data.FCV.massSpool          
-       data.FCV.kProp*10              
+       data.FCV.kProp              
        data.FCV.kInt               
-       data.FCV.kI*10             ];
+       data.FCV.kI             ];
 
 % percentage values of lower and upper boundaries wrt the provided data
-lbPct = [ 0.01
-          0.01
+lbPct = [ 0.5
+          0.5
           0.1
           1-1e-4  
           1-1e-4
@@ -37,9 +37,9 @@ lbPct = [ 0.01
 ubPct = [ 1+1e-4
           1+1e-4 
           1+1e-4     
-          50 
-          5
-          50    ];
+          2 
+          2
+          2    ];
 
 lb = lbPct.*x0;
 ub = ubPct.*x0;

@@ -122,9 +122,9 @@ end
 
 if simType.optimization
     
-    optimization
+     optimization
     
-    options = odeset('AbsTol',1e-14,'RelTol',1e-13);
+    options = odeset('AbsTol',1e-8,'RelTol',1e-6);
     tspan = [0 2*dataOpt.orbit.period];
     
     [TOpt,YOpt,outOpt] = integrateOdeFun(@odeFun, tspan, dataOpt.ode.Y0, options, dataOpt);
