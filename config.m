@@ -73,7 +73,7 @@ data.accelerometer.noiseMagn = 0;
 data.FCV.D0 = sqrt(4*data.FCV.A0/pi); % Diameter of the valve's orifice [m^2]
 
 % Semi Major Axis [km]:
-data.orbit.SMAxis = data.orbit.altitude + data.const.R_MEAN; 
+data.orbit.SMAxis = data.orbit.altitude + data.const.R_EQUATORIAL; 
 
 % Orbit period:
 data.orbit.period = 2*pi*sqrt(data.orbit.SMAxis^3/data.const.MU_EARTH);
