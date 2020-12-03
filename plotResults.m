@@ -21,8 +21,8 @@ title('DragV')
 grid
 
 figure
-plot(T, out.dragV + out.thrust)
-title('Thrust + DragV')
+plot(T, out.residualAcc)
+title('Residual acceleration')
 grid
 
 figure,

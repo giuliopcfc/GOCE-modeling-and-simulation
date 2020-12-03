@@ -14,37 +14,25 @@ data.FCV.kI                 Proportionality Coeffcient Current - Spool
 % Time span array:
 tspan = [0: 10 : data.orbit.period];
 
-odeOptions = odeset('AbsTol',1e-10,'RelTol',1e-8);
+odeOptions = odeset('AbsTol',1e-12,'RelTol',1e-10);
 
 %% Optimization: 
 
 % Initial guess:
-x0 = [ data.accelerometer.kProp    
-       data.accelerometer.kDer
-       data.FCV.massSpool          
-       data.FCV.kProp              
-       data.FCV.kInt               
+x0 = [ data.accelerometer.kProp              
        data.FCV.kI             ];
 
 % percentage values of lower and upper boundaries wrt the provided data
-lbPct = [ 0.5
-          0.5
-          0.1
-          1-1e-4  
-          1-1e-4
-          1-1e-4];
+lbPct = [ 0.1
+          1];
       
-ubPct = [ 1+1e-4
-          1+1e-4 
-          1+1e-4     
-          2 
-          2
-          2    ];
+ubPct = [ 1
+          2  ];
 
 lb = lbPct.*x0;
 ub = ubPct.*x0;
 
-optOptions = optimset('Display','Iter','TolFun',1e-10);
+optOptions = optimset('Display','Iter','TolFun',1e-5);
 
 x = fmincon(@(x) costFun(x, tspan, data.ode.Y0, odeOptions, data),x0,...
  [],[],[],[],lb,ub,[],optOptions);
@@ -53,21 +41,17 @@ x = fmincon(@(x) costFun(x, tspan, data.ode.Y0, odeOptions, data),x0,...
 dataOpt = data;
 
 dataOpt.accelerometer.kProp    = x(1);
-dataOpt.accelerometer.kDer     = x(2);
-dataOpt.FCV.massSpool          = x(3);
-dataOpt.FCV.kProp              = x(4);
-dataOpt.FCV.kInt               = x(5);
-dataOpt.FCV.kI                 = x(6);
+dataOpt.FCV.kI                 = x(2);
 
 %% Functions:
 function J = costFun(x, tspan, Y0, odeOptions, data)
 
 data.accelerometer.kProp    = x(1);
-data.accelerometer.kDer     = x(2);
-data.FCV.massSpool          = x(3);
-data.FCV.kProp              = x(4);
-data.FCV.kInt               = x(5);
-data.FCV.kI                 = x(6);
+% data.accelerometer.kDer     = x(2);
+% data.FCV.massSpool          = x(3);
+% data.FCV.kProp              = x(4);
+% data.FCV.kInt               = x(5);
+data.FCV.kI                 = x(2);
 
 [~,~,out] = integrateOdeFun(@odeFun, tspan, Y0, odeOptions, data);
 

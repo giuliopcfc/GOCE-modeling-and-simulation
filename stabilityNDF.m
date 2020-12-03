@@ -1,5 +1,24 @@
-A = @(alpha) [0, 1; -1, 2*cos(alpha)];
+config;
 
+linearization;
+
+C = 'color'; c = {'b','r','g','m','y','c'};
+x = [0 0]; y = [-8 8]; K = 'k'; LW = 'linewidth'; FS = 'fontsize';
+
+t = chebfun('t',[0 2*pi]);
+z = exp(1i*t);
+
+clf, plot(8*y,x,K,LW,1), hold on, plot(x,8*y,K)
+d = 1-1./z; r = 0;
+for i = 1:5
+  r = r+(d.^i)/i;
+  plot(r,C,c{i},LW,2)
+end
+axis([-15 35 -25 25]), axis square, grid on
+title('Backward differentiation orders 1-5 (exteriors of curves)',FS,16)
+hold on
+
+scatter(real(eigA), imag(eigA), 'filled', 25); 
 
 
 
