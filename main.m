@@ -1,18 +1,21 @@
 % Modeling and Simulation of Aerospace Systems (2020/2021)
 % Project
 % Authors: Giulio Pacifici, Lorenzo Porcelli, Giacomo Velo
-
+tic
 clear;clc;close all;
+set(0,'defaultTextInterpreter','latex');
 
 %% Simulation type:
 
-simType.main = 1; % Main simulation 
+simType.main = 1; % Main simulation
 
 simType.noise = 1; % Simulation with noise
 
 simType.failures = 1; % Simulation with failures
 
-simType.orbitDecay = 0; % Simulation with orbit decay
+simType.orbitDecay = 1; % Simulation with orbit decay
+
+simType.sensitivity = 1; % Sensitivity Analysis
 
 simType.optimization = 1; % Optimization
 
@@ -98,10 +101,10 @@ if simType.orbitDecay
     dataOD.noThrust.tFinal = Inf;
     
     % Time span array:
-    tspan = [0 515*dataOD.orbit.period];
+    tspan = [0 1380*dataOD.orbit.period];
     
     % Integration:
-    options = odeset('AbsTol',1e-8,'RelTol',1e-6);
+    options = odeset('AbsTol',1e-10,'RelTol',1e-8);
     
     [TOD,YOD,outOD] = integrateOdeFun(@odeFun, tspan, dataOD.ode.Y0, options, dataOD);
     
@@ -118,13 +121,21 @@ if simType.linearization
     
 end
 
+%% Sensitivity Analysis:
+
+if simType.sensitivity
+    
+    sensitivityAnalysis
+    
+end
+
 %% Optimization:
 
 if simType.optimization
     
-     optimization
+    optimization
     
-    options = odeset('AbsTol',1e-8,'RelTol',1e-6);
+    options = odeset('AbsTol',1e-10,'RelTol',1e-8);
     tspan = [0 2*dataOpt.orbit.period];
     
     [TOpt,YOpt,outOpt] = integrateOdeFun(@odeFun, tspan, dataOpt.ode.Y0, options, dataOpt);
@@ -132,3 +143,4 @@ if simType.optimization
     plotResults(TOpt, YOpt, outOpt);
     
 end
+toc

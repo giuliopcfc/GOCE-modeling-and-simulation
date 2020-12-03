@@ -1,7 +1,5 @@
 function plotResults(T, Y, out)
 
-set(0,'defaultTextInterpreter','latex');
-
 figure,
 plot(T,Y(:,7))
 xlabel('Time [s]'), ylabel('Semi Major Axis [km]');

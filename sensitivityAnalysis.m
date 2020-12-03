@@ -1,9 +1,73 @@
-% Optimizable variables: [massSpool, kPropFCV, kIntFCV, kI, kPropAcc, kDerAcc];
-config;
+%% Non Optimisable Variables: [CD, mass, massAcc, c, pXe, TXe, deltaV]
 
-ratiosVars = cell(6,1);
+sigmasFrac = [0.2, 0.1, 0.05, 0.2, 0.1, 0.1, 0.05];
+
+% Simulation options:
+tspan = [0:10:2*data.orbit.period]; nT = length(tspan);
+options = odeset('AbsTol',1e-8,'RelTol',1e-6);
+
+N = 1000; % Maximum number of integrations
+
+residualAcc = nan(nT,N); meanArr = residualAcc; stdArr = residualAcc;
+meanEndOld = 1000;
+
+for i = 1:N
+    
+    dataI = data;
+    
+    % CD:
+    CD = data.goce.mass/data.goce.balCoeff/data.goce.area*(1 + randn*sigmasFrac(1));
+    
+    % mass:
+    dataI.goce.mass = data.goce.mass*(1 + randn*sigmasFrac(2));
+    
+    dataI.goce.balCoeff = dataI.goce.mass/dataI.goce.area/CD;
+    
+    % Accelerometer mass variation:
+    dataI.accelerometer.mass = dataI.accelerometer.mass*(1 + randn*sigmasFrac(3));
+    
+    % Viscous force coefficient:
+    dataI.FCV.c = dataI.FCV.c*(1 + randn*sigmasFrac(4));
+    
+    % Xenon pressure:
+    dataI.thruster.p2 = data.thruster.p2*(1 + randn*sigmasFrac(5));
+    
+    % Xenon temperature:
+    dataI.thruster.T2 = data.thruster.T2*(1 + randn*sigmasFrac(6));
+    
+    % Acceleration voltage:
+    dataI.thruster.deltaV = data.thruster.deltaV*(1 + randn*sigmasFrac(7));
+    
+    [~,~,outI] = integrateOdeFun(@odeFun, tspan, dataI.ode.Y0, options, dataI);
+    
+    residualAcc(:,i) = outI.residualAcc;
+    
+    stdArr(:,i) = std(residualAcc(:,1:i),[],2); 
+    meanArr(:,i) = mean(residualAcc(:,1:i),2);
+    
+    % Stopping criterium:
+    if  abs((meanArr(end,i) - meanEndOld)/meanEndOld) < 1e-5
+        break;
+    end
+    meanEndOld = meanArr(end,i);
+end
+
+figure,
+plot(tspan,meanArr(:,i))
+hold on
+plot(tspan,meanArr(:,i) + stdArr(:,i))
+hold on
+plot(tspan,meanArr(:,i) - stdArr(:,i))
+grid on, box on
+title('System Response Envelope Under Uncertainties')
+legend('Mean Response','Mean Response $ +\, \sigma (t)$','Mean Response $ -\, \sigma (t)$',...
+    'interpreter','latex')
+xlabel('Time $[s]$'), ylabel('Residual Acceleration $[m/s^2]$')
+
+%% Optimizable variables: [massSpool, kPropFCV, kIntFCV, kI, kPropAcc, kDerAcc];
 
 % Arrays of variation ratios:
+ratiosVars = cell(6,1);
 ratiosVars{1} = [0.4 0.6 0.8 1.1];          n1 = length(ratiosVars{1});
 ratiosVars{2} = [0.5 5 10 20 50];           n2 = length(ratiosVars{2});
 ratiosVars{3} = [1 5 10 20 50 100 1000];    n3 = length(ratiosVars{3});
@@ -22,9 +86,9 @@ ratioMat(4,n1+n2+n3+1:n1+n2+n3+n4) = ratiosVars{4};
 ratioMat(5,n1+n2+n3+n4+1:n1+n2+n3+n4+n5) = ratiosVars{5};
 ratioMat(6,n1+n2+n3+n4+n5+1:end) = ratiosVars{6};
 
-% Perform Simulation:
 ratiosJArr = zeros(N,1);
 
+% Simulation Options:
 tspan = [0:1:data.orbit.period];
 options = odeset('AbsTol',1e-8,'RelTol',1e-6);
 
@@ -32,7 +96,7 @@ options = odeset('AbsTol',1e-8,'RelTol',1e-6);
 J0 = costFun(tspan, data.ode.Y0, options, data);
 
 for i = 1:N
-    i/N*100
+
     dataI = data;
     dataI.FCV.massSpool = data.FCV.massSpool*ratioMat(1,i);
     dataI.FCV.kProp = data.FCV.kProp*ratioMat(2,i);
@@ -47,7 +111,7 @@ for i = 1:N
     
 end
 
-%% Organize results:
+% Organize results:
 ratiosJ = cell(6,1);
 
 ratiosJ{1} = ratiosJArr(1:n1);
@@ -69,6 +133,7 @@ legend('Spool Mass', 'Proportional Gain FCV', 'Integral Gain FCV', '$K_I$',...
     'Proportional Gain Acc.','Derivative Gain Acc.','interpreter','latex')
 grid on, box on
 xlabel('Percentage Variation'), ylabel('J/J0')
+title('Variation of the cost function VS variation of the optimisable variables')
 
 %% Functions:
 function J = costFun(tspan, Y0, options, data)

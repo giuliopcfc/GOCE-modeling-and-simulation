@@ -92,7 +92,6 @@ data.ode.Y0 = [zeros(6,1); data.ode.Y0GPE; 0];
 % position of the spring such that the thrust equals the drag at t = 0:
 data.FCV.x0 = 0; data.noThrust.switch = 0; data.blockFCV.switch = 0;
 data.thruster.noiseSwitch = 0; data.accelerometer.noiseSwitch = 0; 
-data.noise = @(t) 0;
 [~,out] = odeFun(0,data.ode.Y0,data);
 
 data.FCV.x0 = fzero(@(xFCV) out.dragV + ionThruster(xFCV,data), [0 6e-3]);
