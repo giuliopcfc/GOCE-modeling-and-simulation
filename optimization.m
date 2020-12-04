@@ -12,22 +12,25 @@ data.FCV.kI                 Proportionality Coeffcient Current - Spool
 %% Integration:
 
 % Time span array:
-tspan = [0: 10 : data.orbit.period];
+tspan = [0: 1 : data.orbit.period];
 
 odeOptions = odeset('AbsTol',1e-12,'RelTol',1e-10);
 
 %% Optimization: 
 
 % Initial guess:
-x0 = [ data.accelerometer.kProp              
+x0 = [ data.accelerometer.kProp 
+       data.FCV.kInt                
        data.FCV.kI             ];
 
 % percentage values of lower and upper boundaries wrt the provided data
-lbPct = [ 0.1
+lbPct = [ 0.5
+          1
           1];
       
 ubPct = [ 1
-          2  ];
+          2
+          2];
 
 lb = lbPct.*x0;
 ub = ubPct.*x0;
@@ -41,7 +44,8 @@ x = fmincon(@(x) costFun(x, tspan, data.ode.Y0, odeOptions, data),x0,...
 dataOpt = data;
 
 dataOpt.accelerometer.kProp    = x(1);
-dataOpt.FCV.kI                 = x(2);
+dataOpt.FCV.kInt               = x(2);
+dataOpt.FCV.kI                 = x(3);
 
 %% Functions:
 function J = costFun(x, tspan, Y0, odeOptions, data)
@@ -50,8 +54,8 @@ data.accelerometer.kProp    = x(1);
 % data.accelerometer.kDer     = x(2);
 % data.FCV.massSpool          = x(3);
 % data.FCV.kProp              = x(4);
-% data.FCV.kInt               = x(5);
-data.FCV.kI                 = x(2);
+data.FCV.kInt               = x(2);
+data.FCV.kI                 = x(3);
 
 [~,~,out] = integrateOdeFun(@odeFun, tspan, Y0, odeOptions, data);
 

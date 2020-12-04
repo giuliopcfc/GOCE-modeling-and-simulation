@@ -4,6 +4,7 @@
 tic
 clear;clc;close all;
 set(0,'defaultTextInterpreter','latex');
+set(0,'defaultAxesTickLabelInterpreter','latex');
 
 %% Simulation type:
 
