@@ -69,8 +69,8 @@ xlabel('Time $[s]$'), ylabel('Residual Acceleration $[m/s^2]$')
 
 % Arrays of variation ratios:
 ratiosVars = cell(6,1);  
-ratiosVars{1} = [0.5:0.5:2]; ratiosVars{2} = [0.5:0.5:2]; 
-ratiosVars{3} = [0.5:0.5:2]; ratiosVars{4} = [0.55,1,1.55,1.95];
+ratiosVars{1} = [0.5:0.4:2];  ratiosVars{2} = [0.5:0.35:2]; 
+ratiosVars{3} = [0.5:0.45:2]; ratiosVars{4} = [0.55,1,1.55,1.95];
 ratiosVars{5} = [0.5:0.5:2];  ratiosVars{6} = [0.5:0.5:2]; 
 
 % Simulation Options:
@@ -118,8 +118,8 @@ for i = 1:6
 
 end
 set(gca,'XScale','log')
-legend('Spool Mass', 'Proportional Gain FCV', 'Integral Gain FCV', '$K_I$',...
-    'Proportional Gain Acc.','Derivative Gain Acc.','interpreter','latex')
+legend('$m_{spool}$', '$k_{p,fcv}$', '$k_{i,fcv}$', '$K_I$',...
+    '$k_{p,a}$','$k_{d,a}$','interpreter','latex')
 grid on, box on
 xlabel('Var/Var0'), ylabel('J/J0')
 title('Variation of the cost function VS Variation of the optimisable variables')
