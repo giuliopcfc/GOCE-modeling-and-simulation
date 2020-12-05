@@ -59,3 +59,41 @@ set(gca,'XScale','log')
 legend(legendAbsTol,'interpreter','latex')
 grid on
 xlabel('RelTol'), ylabel('Time [s]')
+
+%% Plot of the stability regions of BDFs along with eigenvalues from the linearization 
+
+config;
+linearization;
+
+x = [0 0]; y = [-8 8];
+
+n = 250;
+t = linspace(0,2*pi,n);
+z = exp(1i*t);
+
+figure,
+plot(8*y,x, 'k', 'HandleVisibility', 'off')
+hold on
+plot(x,8*y, 'k', 'HandleVisibility', 'off')
+
+d = 1-1./z; r = 0;
+
+for i = 1:5
+  r = r+(d.^i)/i;
+  plot(r, 'LineWidth', 2)
+end
+
+title('Backward differentiation formulas orders 1-5 (exteriors of curves)')
+hold on
+xlim([-20 20])
+xlabel('Re\{h\lambda\}')
+ylim([-15 15])
+ylabel('Im\{h\lambda\}')
+grid on
+legend('BDF1','BDF2','BDF3','BDF4','BDF5', 'Location', 'best')
+
+h = 2; %Mean value of the stepsize coming from the integrations
+
+scatter(real(eigA), imag(eigA), 'b', 'filled', 'HandleVisibility', 'off');
+hold on
+scatter(h*real(eigA), h*imag(eigA), 'r', 'filled', 'HandleVisibility', 'off'); 
