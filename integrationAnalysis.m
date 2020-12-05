@@ -65,16 +65,16 @@ xlabel('RelTol'), ylabel('Time [s]')
 config;
 linearization;
 
-x = [0 0]; y = [-8 8];
+x1 = [0 0]; y = [-8 8];
 
 n = 250;
 t = linspace(0,2*pi,n);
 z = exp(1i*t);
 
 figure,
-plot(8*y,x, 'k', 'HandleVisibility', 'off')
+plot(8*y,x1, 'k', 'HandleVisibility', 'off')
 hold on
-plot(x,8*y, 'k', 'HandleVisibility', 'off')
+plot(x1,8*y, 'k', 'HandleVisibility', 'off')
 
 d = 1-1./z; r = 0;
 
@@ -83,18 +83,31 @@ for i = 1:5
   plot(r, 'LineWidth', 2)
 end
 
-title('Backward differentiation formulas orders 1-5 (exteriors of curves)')
-hold on
-xlim([-20 20])
-xlabel('Re\{h\lambda\}')
+xlim([-10 20])
+xlabel('Re $\{ h \lambda \}$')
 ylim([-15 15])
-ylabel('Im\{h\lambda\}')
+ylabel('Im $\{ h \lambda \}$')
 grid on
 legend('BDF1','BDF2','BDF3','BDF4','BDF5', 'Location', 'best')
+hold on
 
-h1 = 1e-3; %Min value of the stepsize coming from the integrations
-h2 = 10; %Max value
+colors = get(gca, 'ColorOrder');
+m = [-tand(86), -tand(73), -tand(51)]';
+x = [0 -1 -3 -5];
+p = plot(x(1:2), m(1)*x(1:2), '--', 'LineWidth', 1.5,...
+    'HandleVisibility', 'off');
+p.Color = colors(5,:);
+hold on
+p = plot(x(1:2:3), m(2)*x(1:2:3), '--', 'LineWidth', 1.5,...
+    'HandleVisibility', 'off');
+p.Color = colors(6,:);
+hold on
+p = plot(x(1:3:end), m(3)*x(1:3:end), '--', 'LineWidth', 1.5,...
+    'HandleVisibility', 'off');
+p.Color = colors(7,:);
 
+% h1 = 1e-3; %Min value of the stepsize coming from the integrations
+% h2 = 10; %Max value
 % scatter(real(eigA), imag(eigA), 'k', 'filled', 'HandleVisibility', 'off');
 % hold on
 % scatter(h1*real(eigA), h1*imag(eigA), 'b', 'filled', 'HandleVisibility', 'off'); 
