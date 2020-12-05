@@ -92,8 +92,11 @@ ylabel('Im\{h\lambda\}')
 grid on
 legend('BDF1','BDF2','BDF3','BDF4','BDF5', 'Location', 'best')
 
-h = 2; %Mean value of the stepsize coming from the integrations
+h1 = 1e-3; %Min value of the stepsize coming from the integrations
+h2 = 10; %Max value
 
-scatter(real(eigA), imag(eigA), 'b', 'filled', 'HandleVisibility', 'off');
-hold on
-scatter(h*real(eigA), h*imag(eigA), 'r', 'filled', 'HandleVisibility', 'off'); 
+% scatter(real(eigA), imag(eigA), 'k', 'filled', 'HandleVisibility', 'off');
+% hold on
+% scatter(h1*real(eigA), h1*imag(eigA), 'b', 'filled', 'HandleVisibility', 'off'); 
+% hold on
+% scatter(h2*real(eigA), h2*imag(eigA), 'r', 'filled', 'HandleVisibility', 'off'); 
