@@ -49,12 +49,15 @@ outF.thrust = TF; outF.dragV = TF; outF.VC = TF;
 dYF = zeros(length(TF),13)';
 for i = 1:length(TF)
     
-    [dYF(:,i),outTemp] = odeFun(TF(i),YF(i,:)',dataF);
+    dataF.noThrust.switch = 1;
+    dataF.blockFCV.switch = 1;
+    
+    [~,outTemp] = odeFun(TF(i),YF(i,:)',dataF);
     
     outF.thrust(i) = outTemp.thrust;
     outF.dragV(i) = outTemp.dragV;
     outF.VC(i) = outTemp.VC;
     
 end
-dYF = dYF';
+
 outF.residualAcc = (outF.thrust + outF.dragV)/data.goce.mass;
