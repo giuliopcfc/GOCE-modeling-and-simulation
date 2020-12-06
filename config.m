@@ -98,3 +98,8 @@ data.FCV.x0 = fzero(@(xFCV) out.dragV + ionThruster(xFCV,data), [0 6e-3]);
 
 data.ode.Y0(2) = data.FCV.x0;
 
+% Options for ode:
+% High tolerance set:
+data.ode.highTol = odeset('AbsTol',1e-14,'RelTol',1e-10);
+% Low tolerance set:
+data.ode.lowTol = odeset('AbsTol',1e-11,'RelTol',1e-8);

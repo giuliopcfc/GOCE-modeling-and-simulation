@@ -6,15 +6,16 @@ config
 tspan = [0 data.orbit.period];
 T = zeros(length(absTol), length(relTol));
 
-for i = 1:150
-    i
+for i = 1:300
+    
     options = odeset('AbsTol',1e-10,'RelTol',1e-8);
     integrateOdeFun(@odeFun, tspan, data.ode.Y0, options, data);
 end
 
+for ii = 1:6
+    ii
 tspan = [0 5*data.orbit.period];
 for i = 1:length(absTol)
-    i
     for j = 1:length(relTol)
         % Integration:
         options = odeset('AbsTol',absTol(i),'RelTol',relTol(j));
@@ -23,6 +24,7 @@ for i = 1:length(absTol)
         T(i,j) = toc;
     end
 end
+end
 %%
 figure,
 hold on
@@ -30,7 +32,7 @@ for i = 1:length(absTol)
     
     plot(relTol,T(i,:),'linewidth',1.5);
 end
-set(gca,'XScale','log')
+set(gca,'XScale','log','YScale','log')
 legend('-14','-13','-12','-11','-10','-9','-8','-7','-6')
 grid on
 xlabel('Rel Tol'), ylabel('Time [s]')

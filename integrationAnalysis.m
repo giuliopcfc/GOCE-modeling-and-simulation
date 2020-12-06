@@ -30,23 +30,24 @@ table(Integrator,IntegrationTime)
 
 % Absolute tolerance and relative tolerance arrays:
 relTol = 10.^[-13:1:-8];
-absTol = 10.^[-13:1:-8];
+absTol = 10.^[-14:1:-8];
 
 % Integration options:
 tspan = [0 data.orbit.period];
 cpuTimes = zeros(length(absTol), length(relTol));
 
 % Integration with different valuess of tolerance:
-for i = 1:length(absTol)
-    for j = 1:length(relTol)
-        options = odeset('AbsTol',absTol(i),'RelTol',relTol(j));
-        tic
-        [T,Y] = ode15s(@odeFun,tspan,data.ode.Y0,options,data);
-        cpuTimes(i,j) = toc;
+for k = 1:10
+    for i = 1:length(absTol)
+        for j = 1:length(relTol)
+            options = odeset('AbsTol',absTol(i),'RelTol',relTol(j));
+            tic
+            [T,Y] = ode15s(@odeFun,tspan,data.ode.Y0,options,data);
+            cpuTimes(i,j) = toc;
+        end
     end
 end
 
-%%
 figure,
 hold on
 legendAbsTol = cell(length(absTol),1);
