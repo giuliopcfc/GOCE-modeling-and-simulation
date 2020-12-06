@@ -37,7 +37,7 @@ tspan = [0 data.orbit.period];
 cpuTimes = zeros(length(absTol), length(relTol));
 
 % Integration with different valuess of tolerance:
-for k = 1:10
+for k = 1:3
     for i = 1:length(absTol)
         for j = 1:length(relTol)
             options = odeset('AbsTol',absTol(i),'RelTol',relTol(j));
@@ -48,23 +48,7 @@ for k = 1:10
     end
 end
 
-figure,
-hold on
-legendAbsTol = cell(length(absTol),1);
-for i = 1:length(absTol)
-    plot(relTol,cpuTimes(i,:),'linewidth',1.5);
-    
-    legendAbsTol{i} = ['AbsTol $= 10^{',num2str(log10(absTol(i))),'}$'];
-end
-set(gca,'XScale','log')
-legend(legendAbsTol,'interpreter','latex')
-grid on
-xlabel('RelTol'), ylabel('Time [s]')
-
-%% Plot of the stability regions of BDFs along with eigenvalues from the linearization 
-
-config;
-linearization;
+%% Plot of the stability regions of BDFs along with eigenvalues from the linearization: 
 
 x1 = [0 0]; y = [-8 8];
 

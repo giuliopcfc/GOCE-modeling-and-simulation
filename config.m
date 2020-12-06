@@ -63,11 +63,6 @@ data.blockFCV.switch = 0;
 data.blockFCV.tInitial = 0;
 data.blockFCV.tFinal = 0;
 
-data.thruster.noiseSwitch = 0;
-data.thruster.noiseMagn = 0;
-data.accelerometer.noiseSwitch = 0;
-data.accelerometer.noiseMagn = 0;
-
 %% Compute additional data:
 
 data.FCV.D0 = sqrt(4*data.FCV.A0/pi); % Diameter of the valve's orifice [m^2]
@@ -86,12 +81,12 @@ data.ode.Y0GPE = [data.orbit.SMAxis; data.orbit.eccentricity;
                 data.orbit.argPerigee*pi/180; data.orbit.theta0*pi/180]; 
             
 % Full state array:
-data.ode.Y0 = [zeros(6,1); data.ode.Y0GPE; 0];
+data.ode.Y0 = [zeros(6,1); data.ode.Y0GPE];
 
 % Set the initial position of the flow control valve and the equilibrium
 % position of the spring such that the thrust equals the drag at t = 0:
 data.FCV.x0 = 0; data.noThrust.switch = 0; data.blockFCV.switch = 0;
-data.thruster.noiseSwitch = 0; data.accelerometer.noiseSwitch = 0; 
+
 [~,out] = odeFun(0,data.ode.Y0,data);
 
 data.FCV.x0 = fzero(@(xFCV) out.dragV + ionThruster(xFCV,data), [0 6e-3]);
@@ -99,6 +94,7 @@ data.FCV.x0 = fzero(@(xFCV) out.dragV + ionThruster(xFCV,data), [0 6e-3]);
 data.ode.Y0(2) = data.FCV.x0;
 
 % Options for ode:
+
 % High tolerance set:
 data.ode.highTol = odeset('AbsTol',1e-14,'RelTol',1e-10);
 % Low tolerance set:
