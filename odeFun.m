@@ -15,7 +15,6 @@ function [dY,out] = odeFun(t,Y,data)
 %  Y(1:3) = YFCV = [intVOut; xFCV; vFCV]
 %  Y(4:6) = YA = [xMass; vMass; VOut]
 %  Y(7:12) = YGPE = [a; e; i; OM; om; theta]
-%  Y(13) = Propellant mass consumed
 % 
 
 % Load data:
@@ -34,17 +33,8 @@ if data.blockFCV.switch
     end
 end
 
-% Off-Nominal Condition: Noise:
-if data.accelerometer.noiseSwitch || data.thruster.noiseSwitch 
-    rng(floor(t/1)) % rng seed
-    noise = rand-0.5;
-else
-    noise = 0;
-end
-
 % Ion Thruster:
-[thrust, mDot] = ionThruster(YFCV(2),data);
-thrust = thrust + data.thruster.noiseSwitch*data.thruster.noiseMagn*noise;
+[thrust] = ionThruster(YFCV(2),data);
 
 % Off-Nominal Condition: No Thrust:
 if data.noThrust.switch 
@@ -68,13 +58,10 @@ dragV = data.goce.mass*dot(aDrag,vv/norm(vv));
 % Accelerometer:
 [dYA,VC] = accelerometer(YA, thrust, dragV, data);
 
-dYA(2) = dYA(2) + ...
-        data.accelerometer.noiseSwitch*data.accelerometer.noiseMagn*noise;
-
 % Orbital Mechanics:
 dYGPE = GPE(YGPE,rr,vv,aDrag,thrust,data);
 
-dY = [dYFCV; dYA; dYGPE; mDot];
+dY = [dYFCV; dYA; dYGPE];
 
 % Output parameters:
 out = struct();

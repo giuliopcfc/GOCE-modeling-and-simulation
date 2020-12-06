@@ -1,7 +1,6 @@
 % Modeling and Simulation of Aerospace Systems (2020/2021)
 % Project
 % Authors: Giulio Pacifici, Lorenzo Porcelli, Giacomo Velo
-tic
 clear;clc;close all;
 set(0,'defaultTextInterpreter','latex','defaultAxesFontSize',15);
 set(0,'defaultAxesTickLabelInterpreter','latex');
@@ -9,19 +8,26 @@ set(0, 'defaultLegendInterpreter','latex');
 
 %% Simulation type:
 
-simType.main = 0; % Main simulation
-
-simType.noise = 0; % Simulation with noise
+simType.main = 1; % Main simulation
 
 simType.failures = 0; % Simulation with failures
 
-simType.orbitDecay = 0; % Simulation with orbit decay
-
 simType.sensitivity = 0; % Sensitivity Analysis
 
-simType.optimization = 0; % Optimization
+simType.integrationAnalysis = 0; % Integration Analysis
+
+simType.optimisation = 0; % Optimisation
 
 simType.linearization = 0; % Linearization
+
+%% Check on linked simulation types:
+
+if simType.integrationAnalysis
+    simType.linearization = 1;
+end
+if simType.optimisation
+    simType.main = 1;
+end
 
 %% Load Data:
 
@@ -36,27 +42,6 @@ if simType.main
     
     [T,Y,out] = integrateOdeFun(@odeFun, tspan, data.ode.Y0, options, data);
 
-end
-
-%% Noisy condition (accelerometer + thruster):
-
-if simType.noise
-    
-    dataN = data;
-    
-    dataN.accelerometer.noiseSwitch = 1;
-    dataN.thruster.noiseSwitch = 1;
-    dataN.accelerometer.noiseMagn = 1e-7;
-    dataN.thruster.noiseMagn = 1e-4;
-    
-    % Time span array:
-    tspan = [0 dataN.orbit.period];
-    
-    % Integration:
-    options = odeset('AbsTol',1e-8,'RelTol',1e-6);
-    
-    [TN,YN,outN] = integrateOdeFun(@odeFun, tspan, dataN.ode.Y0, options, dataN);
-   
 end
 
 %% Failures ( no thrust and blockage of flow control valve):
@@ -83,11 +68,19 @@ if simType.sensitivity
     
 end
 
+%% Integration Analysis
+
+if simType.integrationAnalysis
+   
+    integrationAnalysis
+    
+end
+
 %% Optimization:
 
-if simType.optimization
+if simType.optimisation
     
-    optimization
+    optimisation
     
     tspan = [0 10*data.orbit.period];
     options = data.ode.highTol;
@@ -99,5 +92,3 @@ end
 %% Plot Results:
 
 plots;
-
-toc
