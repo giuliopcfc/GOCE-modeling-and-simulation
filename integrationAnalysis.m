@@ -28,25 +28,29 @@ table(Integrator,IntegrationTime)
 
 %% Choice of the tolerance values:
 
+nRuns = 100; % Number of runs
+
 % Absolute tolerance and relative tolerance arrays:
 relTol = 10.^[-13:1:-8];
 absTol = 10.^[-14:1:-8];
 
 % Integration options:
 tspan = [0 data.orbit.period];
-cpuTimes = zeros(length(absTol), length(relTol));
+cpuTimes = zeros(length(absTol), length(relTol), nRuns);
 
 % Integration with different valuess of tolerance:
-for k = 1:3
+for k = 1:nRuns
     for i = 1:length(absTol)
         for j = 1:length(relTol)
             options = odeset('AbsTol',absTol(i),'RelTol',relTol(j));
             tic
             [T,Y] = ode15s(@odeFun,tspan,data.ode.Y0,options,data);
-            cpuTimes(i,j) = toc;
+            cpuTimes(i,j,k) = toc;
         end
     end
 end
+
+cpuTimes = mean(cpuTimes,3);
 
 %% Plot of the stability regions of BDFs along with eigenvalues from the linearization: 
 

@@ -16,7 +16,7 @@ simType.sensitivity = 0; % Sensitivity Analysis
 
 simType.integrationAnalysis = 0; % Integration Analysis
 
-simType.optimisation = 0; % Optimisation
+simType.optimisation = 1; % Optimisation
 
 simType.linearization = 0; % Linearization
 
@@ -81,11 +81,6 @@ end
 if simType.optimisation
     
     optimisation
-    
-    tspan = [0 10*data.orbit.period];
-    options = data.ode.highTol;
-    
-    [TOpt,YOpt,outOpt] = integrateOdeFun(@odeFun, tspan, dataOpt.ode.Y0, options, dataOpt);
     
 end
 

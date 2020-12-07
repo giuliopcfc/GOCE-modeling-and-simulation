@@ -132,10 +132,18 @@ if simType.integrationAnalysis
     hold on
     legendAbsTol = cell(length(absTol),1);
     for i = 1:length(absTol)
-        plot(relTol,cpuTimes(i,:),'linewidth',1.5);
+        plot(relTol,cpuTimes(i,:),'-o','linewidth',1.5);
         
         legendAbsTol{i} = ['$10^{',num2str(log10(absTol(i))),'}$'];
     end
+    [~,iRel] = min(abs(relTol - data.ode.highTol.RelTol));
+    [~,iAbs] = min(abs(absTol - data.ode.highTol.AbsTol));
+    h = plot(data.ode.highTol.RelTol, cpuTimes(iAbs,...
+        iRel),'xk','markersize',20);
+    [~,iRel] = min(abs(relTol - data.ode.lowTol.RelTol));
+    [~,iAbs] = min(abs(absTol - data.ode.lowTol.AbsTol));
+    plot(data.ode.lowTol.RelTol, cpuTimes(iAbs,...
+        iRel),'xk','markersize',20);
     set(gca,'XScale','log')
     leg = legend(legendAbsTol,'interpreter','latex');
     title(leg,'\textbf{AbsTol}', 'Interpreter', 'Latex')
@@ -144,7 +152,7 @@ if simType.integrationAnalysis
     xlim([min(relTol) max(relTol)])
     saveFigAsPdf('4-comp-times',0.49)
     
-    % Plot of the stability regions of BDFs along with 
+    % Plot of the stability regions of BDFs along with
     % eigenvalues from the linearization:
     x1 = [0 0]; y = [-8 8];
     
@@ -187,4 +195,20 @@ if simType.integrationAnalysis
         'HandleVisibility', 'off');
     p.Color = colors(7,:);
     saveFigAsPdf('4-bdf',0.49)
+end
+
+%% Optimisation:
+
+if simType.optimisation
+    
+    index = T <= TOpt(end);
+    
+    figure,
+    hold on
+    plot(TOpt, outOpt.residualAcc,'k','linewidth',1.5)
+    plot(T(index), out.residualAcc(index),'--r','linewidth',1.5)
+    xlabel('$t [s]$'), ylabel('$a_{res} [m/s^2]$')
+    legend('Optimised System','Initial System')
+    grid on, box on
+    
 end
