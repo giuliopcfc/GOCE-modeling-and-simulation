@@ -1,6 +1,6 @@
 function  dYFCV = flowControlValve(YFCV,VOut,data)
 %
-% Right Hand Side of the ODE system.
+% Flow control valve (and PI controller) block.
 %  
 % INPUT:
 %  YFCV [3,1]       State array
@@ -18,40 +18,40 @@ m = data.FCV.massSpool; kSpring = data.FCV.kSpring; c = data.FCV.c;
 A0 = data.FCV.A0;
 
 % Load state variables:
-intVOut = YFCV(1); x = YFCV(2); v = YFCV(3);
+IVOut = YFCV(1); xV = YFCV(2); vV = YFCV(3);
 
 % BCS for the spool:
 % x = 0 when the valve is completely open, x must be between 0 and D0.
 D0 = sqrt(4*A0/pi); % Diameter of the orifice
-if x <= 0
-    x = 0;
-    if v < 0
-        v = 0;
+if xV <= 0
+    xV = 0;
+    if vV < 0
+        vV = 0;
     end
 end
-if x >= D0
-    x = D0;
-    if v > 0
-        v = 0;
+if xV >= D0
+    xV = D0;
+    if vV > 0
+        vV = 0;
     end
 end
 
 % PI controller:
-i = kProp*VOut + kInt*intVOut;
+I = kProp*VOut + kInt*IVOut;
 
 x0 = data.FCV.x0; % Rest position of the spring [m]
 
 % EOM of the spool:
-dx = v;
+dxV = vV;
 
-dv = 1/m*( kSpring*(x0 - x) - kI*i - c*v );
+dvV = 1/m*( kSpring*(x0 - xV) - kI*I - c*vV );
 
 % BCS for the spool:
-if (x <= 0 && dv < 0) || (x >= D0 && dv > 0)
-    dv = 0;
+if (xV <= 0 && dvV < 0) || (xV >= D0 && dvV > 0)
+    dvV = 0;
 end
     
 % Derivatives of the state variables:
-dYFCV = [VOut; dx; dv];
+dYFCV = [VOut; dxV; dvV];
 
 end

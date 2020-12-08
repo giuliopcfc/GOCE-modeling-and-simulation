@@ -9,9 +9,9 @@ rng(1)
 tSA = [0:10:2*data.orbit.period]; nT = length(tSA);
 options = data.ode.lowTol;
 
-N =5000; % Maximum number of integrations
+N = 1000; % Maximum number of integrations
 
-residualAcc = nan(nT,N); meanArr = residualAcc; stdArr = residualAcc;
+aRes = nan(nT,N); meanArr = aRes; stdArr = aRes;
 meanEndOld = 1000;
 
 for i = 1:N
@@ -43,10 +43,10 @@ for i = 1:N
     
     [~,~,outI] = integrateOdeFun(@odeFun, tSA, dataI.ode.Y0, options, dataI);
     
-    residualAcc(:,i) = outI.residualAcc;
+    aRes(:,i) = outI.aRes;
     
-    stdArr(:,i) = std(residualAcc(:,1:i),[],2);
-    meanArr(:,i) = mean(residualAcc(:,1:i),2);
+    stdArr(:,i) = std(aRes(:,1:i),[],2);
+    meanArr(:,i) = mean(aRes(:,1:i),2);
     
     % Stopping criterium:
     if  abs((meanArr(end,i) - meanEndOld)/meanEndOld) < 1e-5

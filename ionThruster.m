@@ -1,26 +1,26 @@
-function [thrust] = ionThruster(xFCV,data)
+function [aThrust] = ionThruster(xV,data)
 % 
 % Function to compute the thrust.
 % 
 % INPUT:
-%  xFCV               Position control valve [m]
+%  xV                 Position of the spool [m]
 %  data               data struct
 % 
 % OUTPUT:
-%  thrust             Force [N]
+%  aThrust            Thrust acceleration [m/s^2]          
 % 
 
 D0 = data.FCV.D0;
 
 % BCS on xFCV:
-if xFCV > D0
-    xFCV = D0;
-elseif xFCV < 0
-    xFCV = 0;
+if xV > D0
+    xV = D0;
+elseif xV < 0
+    xV = 0;
 end
 
 % assigning the value to z
-z = 1-xFCV/D0;
+z = 1-xV/D0;
 
 % computation of the orifice area
 alpha = 2*acos(1-2*z);
@@ -37,6 +37,6 @@ mDot = areaOrifice*p2*sqrt(k)/sqrt(T2*R)*(1+0.5*(k-1))^((-k-1)/2/(k-1));
 
 vAcc = sqrt(2*data.thruster.e*data.thruster.deltaV/data.thruster.massIon);
 
-thrust = mDot*vAcc;
+aThrust = mDot*vAcc./data.goce.mass;
 
 end

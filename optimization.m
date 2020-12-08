@@ -60,6 +60,6 @@ data.FCV.kInt               = x(4)*data.FCV.kInt;
 
 [~,~,out] = integrateOdeFun(@odeFun, tspan, Y0, odeOptions, data);
 
-J = norm(out.residualAcc);
+J = norm(out.aRes);
 
 end

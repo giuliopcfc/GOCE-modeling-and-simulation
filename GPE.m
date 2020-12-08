@@ -1,4 +1,4 @@
-function dYGPE = GPE(YGPE,rr,vv,aDrag,thrust,data)
+function dYGPE = GPE(YGPE,rr,vv,aDrag,aJ2,aThrust,data)
 % 
 % GPE Gauss Planetary Equations. Function to compute the derivative of the 
 % keplerian elements' state array.
@@ -8,7 +8,8 @@ function dYGPE = GPE(YGPE,rr,vv,aDrag,thrust,data)
 %  rr [3,1]         Position vector in inertial frame [km]
 %  vv [3,1]         Velocity vector in inertial frame [km/s]
 %  aDrag [3,1]      Drag acceleration [m/s^2]
-%  thrust           Value of thrust [N]
+%  aJ2 [3,1]        J2 perturbing acceleration [km/s^2]
+%  aThrust [3,1]    Thrust acceleration [m/s^2]
 %  data             data struct
 % 
 % OUTPUT:
@@ -19,23 +20,19 @@ MU = data.const.MU_EARTH;
 
 % Initialize keplerian elements:
 a = YGPE(1); e = YGPE(2); i = YGPE(3);
-OM = YGPE(4); om = YGPE(5); f = YGPE(6);
+om = YGPE(5); f = YGPE(6);
 
 % Perturbing acceleration:
 % Thrust:
-aThrust = thrust/data.goce.mass/1000; % [km/s^2]
-
-% J2 Effect:
-aJ2 = pertJ2(rr,data);
+aThrust = aThrust/1000; % [km/s^2]
+% Drag:
+aDrag = aDrag/1000; % [km/s^2]
 
 % Rotation to TNH frame:
 tVers = vv/norm(vv);                       % Tangential versor
 hVers = cross(rr,vv)/norm(cross(rr,vv));   % Out of plane versor
 nVers = cross(hVers,tVers);                % Normal versor
 A = [tVers,nVers,hVers];                   % Rotation Matrix
-
-% Convert aDrag to [km/s^2]:
-aDrag = aDrag/1000;
 
 aPert = A'*(aDrag + aJ2) + [aThrust; 0; 0];
 

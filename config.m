@@ -89,7 +89,7 @@ data.FCV.x0 = 0; data.noThrust.switch = 0; data.blockFCV.switch = 0;
 
 [~,out] = odeFun(0,data.ode.Y0,data);
 
-data.FCV.x0 = fzero(@(xFCV) out.dragV + ionThruster(xFCV,data), [0 6e-3]);
+data.FCV.x0 = fzero(@(xV) out.aDragV + ionThruster(xV,data), [0 6e-3]);
 
 data.ode.Y0(2) = data.FCV.x0;
 

@@ -6,26 +6,26 @@ set(0,'defaultTextInterpreter','latex','defaultAxesFontSize',15);
 set(0,'defaultAxesTickLabelInterpreter','latex');
 set(0, 'defaultLegendInterpreter','latex');
 
-%% Simulation type:
+%% Select simulation type:
 
-simType.main = 1; % Main simulation
+simType.main = 1; % Main simulation                     (ETA: 3 seconds)
 
-simType.failures = 1; % Simulation with failures
+simType.failures = 1; % Simulation with failures        (ETA: 4 seconds)
 
-simType.sensitivity = 0; % Sensitivity Analysis
+simType.linearization = 1; % Linearization              (ETA: 10 seconds)
 
-simType.integrationAnalysis = 0; % Integration Analysis
+simType.sensitivity = 1; % Sensitivity Analysis         (ETA: 28 seconds)
 
-simType.optimization = 1; % Optimization
+simType.integrationAnalysis = 1; % Integration Analysis (ETA: 25 seconds)
 
-simType.linearization = 0; % Linearization
+simType.optimization = 1; % Optimization                (ETA: 120 seconds)
 
 %% Check on linked simulation types:
 
 if simType.integrationAnalysis
     simType.linearization = 1;
 end
-if simType.optimisation
+if simType.optimization
     simType.main = 1;
 end
 
@@ -44,7 +44,7 @@ if simType.main
 
 end
 
-%% Failures ( no thrust and blockage of flow control valve):
+%% Failures (no thrust and blockage of flow control valve):
 
 if simType.failures
     

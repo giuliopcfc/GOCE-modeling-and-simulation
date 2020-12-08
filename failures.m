@@ -54,7 +54,7 @@ end
 % are here retrieved:
 
 outF = struct();
-outF.thrust = TF; outF.dragV = TF; outF.VC = TF;
+outF.aRes = TF;
 
 for i = 1:length(TF)
     
@@ -63,10 +63,8 @@ for i = 1:length(TF)
     
     [~,outTemp] = odeFun(TF(i),YF(i,:)',dataF);
     
-    outF.thrust(i) = outTemp.thrust;
-    outF.dragV(i) = outTemp.dragV;
-    outF.VC(i) = outTemp.VC;
+    outF.aRes(i) = outTemp.aRes;
     
 end
 
-outF.residualAcc = (outF.thrust + outF.dragV)/data.goce.mass;
+
