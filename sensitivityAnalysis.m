@@ -3,7 +3,6 @@
 % Variables: CD, mass of GOCE,proof mass of the accelerometer, c,
 %             mass of the spool, KI, Xenon temperature
 
-tic
 sigmasFrac = [0.2, 0.1, 0.1, 0.2, 0.1, 0.1, 0.05]; 
 rng(1)
 % Simulation options:
@@ -55,6 +54,6 @@ for i = 1:N
     end
     meanEndOld = meanArr(end,i);
 end
-toc
+
 meanResp = meanArr(:,i);
 stdResp = stdArr(:,i);

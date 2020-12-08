@@ -22,7 +22,7 @@ xNominal = [    data.accelerometer.kProp;
 
 %% Set boundaries:
 LB = (1 - 0.5)*xNominal;
-UB = (1 + 0.5)*xNominal;
+UB = (1 + 1)*xNominal;
 
 % Normalize boundaries:
 lb = LB./xNominal;

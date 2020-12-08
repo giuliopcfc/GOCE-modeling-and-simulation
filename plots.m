@@ -198,7 +198,7 @@ if simType.integrationAnalysis
     saveFigAsPdf('4-bdf',0.49)
 end
 
-%% optimization:
+%% Optimization:
 
 if simType.optimization
     
@@ -209,7 +209,7 @@ if simType.optimization
     plot(TOpt, outOpt.residualAcc,'k','linewidth',1.5)
     plot(T(index), out.residualAcc(index),'--r','linewidth',1.5)
     xlabel('$t [s]$'), ylabel('$a_{res} [m/s^2]$')
-    legend('Optimised System','Initial System')
+    legend('Optimized System','Initial System')
     grid on, box on
-    
+    saveFigAsPdf('7-optimization',0.49)
 end

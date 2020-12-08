@@ -16,7 +16,7 @@ simType.sensitivity = 0; % Sensitivity Analysis
 
 simType.integrationAnalysis = 0; % Integration Analysis
 
-simType.optimisation = 1; % Optimisation
+simType.optimization = 1; % Optimization
 
 simType.linearization = 0; % Linearization
 
@@ -78,7 +78,7 @@ end
 
 %% Optimization:
 
-if simType.optimisation
+if simType.optimization
     
     optimization
     

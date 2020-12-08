@@ -50,7 +50,8 @@ for i = 1:5
     
 end
 
-% the values of thrust and dragV are here retrieved:
+% The values of thrust and drag( in the velocity direction) 
+% are here retrieved:
 
 outF = struct();
 outF.thrust = TF; outF.dragV = TF; outF.VC = TF;
