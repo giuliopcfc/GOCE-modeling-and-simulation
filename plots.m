@@ -1,3 +1,4 @@
+%% Plots:
 % Script to plot the results of the simulation:
 %% Main Simulation:
 if simType.main
@@ -197,9 +198,9 @@ if simType.integrationAnalysis
     saveFigAsPdf('4-bdf',0.49)
 end
 
-%% Optimisation:
+%% optimization:
 
-if simType.optimisation
+if simType.optimization
     
     index = T <= TOpt(end);
     

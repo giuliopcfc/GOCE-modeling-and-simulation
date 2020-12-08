@@ -38,7 +38,7 @@ absTol = 10.^[-14:1:-8];
 tspan = [0 data.orbit.period];
 cpuTimes = zeros(length(absTol), length(relTol), nRuns);
 
-% Integration with different valuess of tolerance:
+% Integration with different values of tolerances:
 for k = 1:nRuns
     for i = 1:length(absTol)
         for j = 1:length(relTol)

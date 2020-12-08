@@ -10,7 +10,7 @@ set(0, 'defaultLegendInterpreter','latex');
 
 simType.main = 1; % Main simulation
 
-simType.failures = 0; % Simulation with failures
+simType.failures = 1; % Simulation with failures
 
 simType.sensitivity = 0; % Sensitivity Analysis
 
@@ -80,7 +80,7 @@ end
 
 if simType.optimisation
     
-    optimisation
+    optimization
     
 end
 

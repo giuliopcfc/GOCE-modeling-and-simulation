@@ -1,12 +1,17 @@
+%% Linearization:
+% The linearization of the system is performed here. The equilibrium
+% condition of the system is selected as the initial one.
+
+% Definition of the syms variables:
 syms intVOut xFCV vFCV xAcc vAcc VOut a e i OM om theta 
 
-Y = [intVOut xFCV vFCV xAcc vAcc VOut a e i OM om theta];
+Y = [intVOut xFCV vFCV xAcc vAcc VOut a e i OM om theta]; %state vector
 
 dY = symOdeFun(0,Y,data);
 
-J = jacobian(dY,Y);
+J = jacobian(dY,Y); %Jacobian matrix
 
-A = double(subs(J,Y,data.ode.Y0(1:12)'));
+A = double(subs(J,Y,data.ode.Y0(1:12)')); %Jacobian matrix with numeriacal data
 
 eigA = eig(A); 
 
@@ -37,17 +42,19 @@ dYFCV = [VOut; dx; dv];
 end
 
 function [thrust] = symIonThruster(xFCV,data) 
+
+% Load data:
 D0 = data.FCV.D0;
 
-% assigning the value to z
+% Assigning the value to z:
 z = 1-xFCV/D0;
 
-% computation of the orifice area
+% Computation of the orifice area:
 alpha = 2*acos(1-2*z);
 areaOrifice = D0^2/8*(alpha - sin(alpha));
 
-% since the pressure after the valve is much lower than the critical
-% pressure, the flow is chocked. Hypothesis of homoentropic flow.
+% Since the pressure after the valve is much lower than the critical
+% pressure, the flow is chocked. Hypothesis of homoentropic flow:
 T2 = data.thruster.T2;
 p2 = data.thruster.p2;
 k =  data.thruster.kXe; 
@@ -63,6 +70,7 @@ end
 
 function [dYA] = symAccelerometer(YA, thrust, dragV, data)
 
+% Load data:
 mGOCE = data.goce.mass;
 areaA = data.accelerometer.areaMass;
 massA = data.accelerometer.mass;
@@ -115,6 +123,7 @@ end
 
 function dYGPE = symGPE(YGPE,rr,vv,aDrag,thrust,data)
 
+% Load data:
 MU = data.const.MU_EARTH;
 
 % Initialize keplerian elements:
@@ -123,10 +132,10 @@ OM = YGPE(4); om = YGPE(5); f = YGPE(6);
 
 % Perturbing acceleration:
 % Thrust:
-aThrust = thrust/data.goce.mass/1000; % [km/s^2]
+aThrust = thrust/data.goce.mass/1000; %[km/s^2]
 
 % J2 Effect:
-aJ2 = pertJ2(rr,data);
+aJ2 = pertJ2(rr,data); %[km/s^2]
 
 % Rotation to TNH frame:
 tVers = vv/norm(vv);                       % Tangential versor

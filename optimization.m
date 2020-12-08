@@ -1,3 +1,6 @@
+%% Optimization:
+% The optimization of the system is here performed. The cost function is
+% selected as the residual acceleration.
 %{
 Optimization variables:
 
@@ -25,7 +28,7 @@ UB = (1 + 0.5)*xNominal;
 lb = LB./xNominal;
 ub = UB./xNominal;
 
-%% Optimisation:
+%% Optimization:
 
 x0 = xNominal./xNominal; % Normalized initial guess
 
@@ -34,7 +37,7 @@ optOptions = optimset('Display','Iter','TolFun',1e-7);
 x = fmincon(@(x) costFun(x, tspan, data.ode.Y0, odeOptions, data),...
     x0,[],[],[],[],lb,ub,[],optOptions);
 
-%% Retrive optimised data struct:
+%% Retrive optimized data struct:
 dataOpt = data;
 dataOpt.accelerometer.kProp    = x(1)*data.accelerometer.kProp;
 dataOpt.accelerometer.kDer     = x(2)*data.accelerometer.kDer;
