@@ -50,7 +50,7 @@ for i = 1:5
     
 end
 
-% The values of thrust and drag( in the velocity direction) 
+% The values of thrust and drag (in the velocity direction) 
 % are here retrieved:
 
 outF = struct();

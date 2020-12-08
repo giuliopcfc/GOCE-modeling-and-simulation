@@ -8,17 +8,17 @@ set(0, 'defaultLegendInterpreter','latex');
 
 %% Select simulation type:
 
-simType.main = 1; % Main simulation                     (ETA: 3 seconds)
+simType.main = 1;                % Main simulation             (ETA: 3 seconds)
 
-simType.failures = 1; % Simulation with failures        (ETA: 4 seconds)
+simType.failures = 1;            % Simulation with failures    (ETA: 4 seconds)
 
-simType.linearization = 1; % Linearization              (ETA: 10 seconds)
+simType.linearization = 1;       % Linearization               (ETA: 10 seconds)
 
-simType.sensitivity = 1; % Sensitivity Analysis         (ETA: 28 seconds)
+simType.sensitivity = 1;         % Sensitivity Analysis        (ETA: 28 seconds)
 
-simType.integrationAnalysis = 1; % Integration Analysis (ETA: 25 seconds)
+simType.integrationAnalysis = 1; % Integration Analysis        (ETA: 25 seconds)
 
-simType.optimization = 1; % Optimization                (ETA: 120 seconds)
+simType.optimization = 1;        % Optimization                (ETA: 120 seconds)
 
 %% Check on linked simulation types:
 

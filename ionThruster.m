@@ -1,6 +1,6 @@
 function [aThrust] = ionThruster(xV,data)
 % 
-% Function to compute the thrust.
+% Function to compute the thrust acceleration.
 % 
 % INPUT:
 %  xV                 Position of the spool [m]
@@ -19,14 +19,14 @@ elseif xV < 0
     xV = 0;
 end
 
-% assigning the value to z
+% Assigning the value to z
 z = 1-xV/D0;
 
-% computation of the orifice area
+% Computation of the orifice area
 alpha = 2*acos(1-2*z);
 areaOrifice = D0^2/8*(alpha - sin(alpha));
 
-% since the pressure after the valve is much lower than the critical
+% Since the pressure after the valve is much lower than the critical
 % pressure, the flow is chocked. Hypothesis of homoentropic flow.
 T2 = data.thruster.T2;
 p2 = data.thruster.p2;

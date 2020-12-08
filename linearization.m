@@ -5,17 +5,18 @@
 % Definition of the syms variables:
 syms IVOut xFCV vFCV xAcc vAcc VOut a e i OM om theta
 
-symY = [IVOut xFCV vFCV xAcc vAcc VOut a e i OM om theta]; %state vector
+symY = [IVOut xFCV vFCV xAcc vAcc VOut a e i OM om theta]; % State vector
 
 symDY = symOdeFun(0,symY,data);
 
-symJ = jacobian(symDY,symY); %Jacobian matrix
+symJ = jacobian(symDY,symY);                               % Jacobian matrix
 
-A = double(subs(symJ,symY,data.ode.Y0')); %Jacobian matrix with numeriacal data
+A = double(subs(symJ,symY,data.ode.Y0'));                  % Jacobian matrix with numeriacal data
 
 eigA = eig(A);
 
 %% Symbolic Functions:
+
 function  dYFCV = symFlowControlValve(YFCV,VOut,data)
 
 % Load data:
@@ -45,14 +46,14 @@ function [aThrust] = symIonThruster(xV,data)
 
 D0 = data.FCV.D0;
 
-% assigning the value to z
+% Assigning the value to z
 z = 1-xV/D0;
 
-% computation of the orifice area
+% Computation of the orifice area
 alpha = 2*acos(1-2*z);
 areaOrifice = D0^2/8*(alpha - sin(alpha));
 
-% since the pressure after the valve is much lower than the critical
+% Since the pressure after the valve is much lower than the critical
 % pressure, the flow is chocked. Hypothesis of homoentropic flow.
 T2 = data.thruster.T2;
 p2 = data.thruster.p2;
@@ -171,10 +172,10 @@ df = h/r^2 - 1/e/v*(2*sin(f)*at + (2*e + r/a*cos(f))*an);
 % Assembling array of state derivatives:
 dYGPE = [da;de;di;dOM;dom;df];
 
-
 end
 
 function dY = symOdeFun(~,Y,data)
+
 % Load data:
 MU = data.const.MU_EARTH;
 
@@ -202,7 +203,7 @@ rho = 6.6386e-11;  % Reference Density
 
 vRel = (vv - cross(data.const.W_EARTH*[0;0;1],rr))*1000; % Air Relative Velocity [m/s]
 
-aDrag = -0.5/data.goce.balCoeff*rho*norm(vRel)*vRel; % Perturbing acceleration [m/s^2]
+aDrag = -0.5/data.goce.balCoeff*rho*norm(vRel)*vRel;     % Perturbing acceleration [m/s^2]
 
 % J2 perturbing acceleration:
 J2 = data.const.J2; 

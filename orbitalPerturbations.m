@@ -3,9 +3,9 @@ function [aDrag, aJ2] = orbitalPerturbations(rr,vv,data)
 % Function to compute the drag and J2 perturbing accelerations.
 % 
 % INPUT:
-%  rr   [3,1]       Position Vector
-%  vv   [3,1]       Velocity Vector
-%  data             data struct.
+%  rr   [3,1]     Position Vector
+%  vv   [3,1]     Velocity Vector
+%  data           data struct.
 % 
 % OUTPUT:
 %  aDrag [3,1]    Perturbing acceleration vector due to aerodynamic drag [m/s^2]
@@ -17,7 +17,7 @@ rho = density(rr,data);
 
 vRel = (vv - cross(data.const.W_EARTH*[0;0;1],rr))*1000; % Air Relative Velocity [m/s]
 
-aDrag = -0.5/data.goce.balCoeff*rho*norm(vRel)*vRel; % Perturbing acceleration [m/s^2]
+aDrag = -0.5/data.goce.balCoeff*rho*norm(vRel)*vRel;     % Perturbing acceleration [m/s^2]
 
 % J2 perturbing acceleration:
 J2 = data.const.J2; 

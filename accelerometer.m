@@ -1,17 +1,17 @@
 function [dYA] = accelerometer(YA, aThrust, aDragV, data)
-% 
-% Function to compute the derivative of the state of a capacitive
-% accelerometer + read-out circuit for voltage.
-%  
-% INPUT:
-%  YA     [3,1]     Array of the state variables (position, velocity and
-%                   output voltage of the read-out circuit)
-%  aThrust          Thrust acceleration [m/s^2]
-%  aDragV           Drag acceleration in velocity direction [m/s^2]
-%  data             data struct
-% 
-% OUTPUT:
-%  dYA    [3,1]     Time derivative of the state vector
+ % 
+ % Function to compute the derivative of the state of a capacitive
+ % accelerometer + read-out circuit for voltage.
+ % 
+ % INPUT:
+ % YA     [3,1]     Array of the state variables (position, velocity and
+ %                  output voltage of the read-out circuit)
+ % aThrust          Thrust acceleration [m/s^2]
+ % aDragV           Drag acceleration in velocity direction [m/s^2]
+ % data             data struct
+ % 
+ % OUTPUT:
+ % dYA    [3,1]     Time derivative of the state vector
  
 % Load data:
 areaA = data.accelerometer.areaMass;

@@ -13,7 +13,7 @@ function rho = density(rr,data)
 R_EQ = data.const.R_EQUATORIAL;
 R_PO = data.const.R_POLAR;
 
-lat = pi/2 - acos(rr(3)/norm(rr)); % latitude of the satellite
+lat = pi/2 - acos(rr(3)/norm(rr)); % Latitude of the satellite
 
 % Earth's radius for the specified latitude:
 a = R_PO*cos(lat);
