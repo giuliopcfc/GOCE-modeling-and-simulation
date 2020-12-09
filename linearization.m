@@ -9,6 +9,10 @@ symY = [IVOut xFCV vFCV xAcc vAcc VOut a e i OM om theta]; % State vector
 
 symDY = symOdeFun(0,symY,data);
 
+% NOTE: at least for our computers, the mere display of the symbolic 
+% Jacobian took a very long time. We suggest not displaying it in its 
+% integrity. If interested in seeing it, we rather suggest to do it 
+% by diplaying single rows/colums one at the time.
 symJ = jacobian(symDY,symY);                               % Jacobian matrix
 
 A = double(subs(symJ,symY,data.ode.Y0'));                  % Jacobian matrix with numeriacal data
