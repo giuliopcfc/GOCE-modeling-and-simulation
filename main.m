@@ -2,6 +2,12 @@
 % Project
 % Authors: Giulio Pacifici, Lorenzo Porcelli, Giacomo Velo
 clear;clc;close all;
+
+% Add path for functions and scripts folders:
+addpath(genpath('functions'));
+addpath(genpath('scripts'));
+
+% Setup for the plots:
 set(0,'defaultTextInterpreter','latex','defaultAxesFontSize',15);
 set(0,'defaultAxesTickLabelInterpreter','latex');
 set(0, 'defaultLegendInterpreter','latex');
