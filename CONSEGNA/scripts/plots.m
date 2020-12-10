@@ -9,7 +9,6 @@ if simType.main
     xlabel('$t [s]$'), ylabel('$a [km]$');
     grid on, box on
     title('Nominal Response - Semi Major Axis')
-    %saveFigAsPdf('6-SMAxis',0.49,2.5)
     
     % FCV:
     figure,
@@ -22,7 +21,6 @@ if simType.main
     xlabel('$t [s]$'), ylabel('$v_v [m/s]$')
     grid on, box on
     suptitle('Nominal Response - Flow Control Valve')
-    %saveFigAsPdf('6-FCV',0.49)
     
     % Accelerometer:
     figure,
@@ -35,15 +33,13 @@ if simType.main
     xlabel('$t [s]$'), ylabel('$v_a [m/s]$')
     grid on, box on
     suptitle('Nominal Response - Accelerometer')
-    %saveFigAsPdf('6-Accelerometer',0.49)
     
     % Output Voltage:
     figure,
     plot(T,Y(:,6),'k','linewidth',1.5)
     xlabel('$t [s]$'), ylabel('$V_{out} [V]$')
     grid on, box on
-    title('Nominal Response - Output voltage of read-out circuit')
-    %saveFigAsPdf('6-VOut',0.49,2.5)
+    title('Nominal Response - Output voltage of read-out circuit')   
     
     % Drag Acceleration:
     figure,
@@ -51,7 +47,6 @@ if simType.main
     xlabel('$t [s]$'), ylabel('$\vec{a}_{D} \cdot \hat{t} \, [m/s^2]$')
     grid on, box on
     title('Nominal Response - Drag Acceleration')
-%     saveFigAsPdf('6-dragAcc',0.49,2.5)
     
     % Res. Acceleration:
     figure,
@@ -59,7 +54,6 @@ if simType.main
     xlabel('$t [s]$'), ylabel('$a_{res} [m/s^2]$')
     grid on, box on
     title('Nominal Response - Res. Acceleration')
-%     saveFigAsPdf('6-residualAcc',0.49,2.5)
 end
 
 %% Sensitivity Analysis
@@ -74,8 +68,7 @@ if simType.sensitivity
     grid on, box on
     title('System Response Envelope With Uncertainties')
     legend('Mean Response','Mean Response $ \pm\, \sigma (t)$')
-    xlabel('$t [s]$'), ylabel('$a_{res} [m/s^2]$')
-    %saveFigAsPdf('6-sensitivity',0.49)
+    xlabel('$t [s]$'), ylabel('$a_{res} [m/s^2]$')    
 end
 
 %% Failures:
@@ -96,8 +89,7 @@ if simType.failures
         'linewidth',1.5,'linestyle','--');
     line([dataF.blockFCV.tFinal dataF.blockFCV.tFinal],1e5*[-1 1],'color','b',...
         'linewidth',1.5,'linestyle','--')
-    legend([h1;h2],'Thruster failure','Valve failure')
-    %saveFigAsPdf('6-failures-residualAcc',0.49,1.5)
+    legend([h1;h2],'Thruster failure','Valve failure')    
     
     % FCV:
     figure,
@@ -130,8 +122,7 @@ if simType.failures
     line([dataF.blockFCV.tInitial dataF.blockFCV.tInitial],1e5*[-1 1],'color','b',...
         'linewidth',1.5,'linestyle','--');
     line([dataF.blockFCV.tFinal dataF.blockFCV.tFinal],1e5*[-1 1],'color','b',...
-        'linewidth',1.5,'linestyle','--')
-    %saveFigAsPdf('6-failures-FCV',0.49,1.5)
+        'linewidth',1.5,'linestyle','--')    
     yticks(1e-10*[-4 0 4])
 end
 
@@ -161,8 +152,7 @@ if simType.integrationAnalysis
     grid on
     xlabel('RelTol'), ylabel('Time [s]')
     xlim([min(relTol) max(relTol)])
-    title('Computational Time VS Tolerances')
-    %saveFigAsPdf('4-comp-times',0.49)
+    title('Computational Time VS Tolerances')    
     
     % Plot of the stability regions of BDFs along with
     % eigenvalues from the linearization:
@@ -206,8 +196,7 @@ if simType.integrationAnalysis
     p = plot(x(1:3:end), m(3)*x(1:3:end), '--', 'LineWidth', 1.5,...
         'HandleVisibility', 'off');
     p.Color = colors(7,:);
-    title('Numerical Stability Domain of BDF')
-    %saveFigAsPdf('4-bdf',0.49)
+    title('Numerical Stability Domain of BDF')    
 end
 
 %% Optimization:
@@ -223,6 +212,5 @@ if simType.optimization
     xlabel('$t [s]$'), ylabel('$a_{res} [m/s^2]$')
     legend('Optimized System','Initial System')
     grid on, box on
-    title('Optimization')
-    %saveFigAsPdf('7-optimization',0.49)
+    title('Optimization')    
 end
