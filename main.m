@@ -1,6 +1,6 @@
 % Modeling and Simulation of Aerospace Systems (2020/2021)
 % Project
-% Authors: Giulio Pacifici, Lorenzo Porcelli, Giacomo Velo
+% Authors: Giulio Pacifici, Lorenzo Porcelli, Giacomo Velo (group 3)
 clear;clc;close all;
 
 % Add path for functions and scripts folders:
