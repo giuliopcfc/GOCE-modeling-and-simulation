@@ -13,11 +13,13 @@ symDY = symOdeFun(0,symY,data);
 % Jacobian took a very long time. We suggest not displaying it in its 
 % integrity. If interested in seeing it, we rather suggest to do it 
 % by diplaying single rows/colums one at the time.
-symJ = jacobian(symDY,symY);                               % Jacobian matrix
+symJ = jacobian(symDY,symY);                  % Jacobian matrix
 
-A = double(subs(symJ,symY,data.ode.Y0'));                  % Jacobian matrix with numeriacal data
+ATot = double(subs(symJ,symY,data.ode.Y0'));  % Jacobian matrix with numeriacal data
 
-eigA = eig(A);
+ASub = ATot(1:6,1:6);                         % Jacobian matrix of the inner subsystem           
+
+eigA = eig(ASub);
 
 %% Symbolic Functions:
 
